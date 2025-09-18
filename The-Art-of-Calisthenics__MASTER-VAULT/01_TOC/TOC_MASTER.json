@@ -1,0 +1,15 @@
+{
+  "title": "The Art of Calisthenics",
+  "parts": [
+    { "id": "P1", "name": "Start Here", "chapters": [
+      { "id": "P1C01", "title": "What, How, Why & Who" },
+      { "id": "P1C02", "title": "Getting Started" }
+    ]},
+    { "id": "P2", "name": "The Art of Calisthenics", "chapters": []},
+    { "id": "P3", "name": "Mastering Calisthenics", "chapters": []},
+    { "id": "P4", "name": "Road to Mastery", "chapters": []},
+    { "id": "P5", "name": "Building Your Own Program", "chapters": []},
+    { "id": "P6", "name": "The Endless Journey", "chapters": []},
+    { "id": "P7", "name": "You Are Now a Master", "chapters": []}
+  ]
+}

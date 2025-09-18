@@ -1,0 +1,10 @@
+fields:
+  body_split: [Upper, Lower, Core, Full Body]
+  pattern: [Push, Pull, Hinge, Squat, Carry, Rotate, Anti-Rotate, Gait]
+  mechanic:
+    upper: [Straight-Arm, Bent-Arm]
+    lower: [Knee-Dominant, Hip-Dominant]
+  direction: [Vertical, Horizontal]
+  limbs: [Unilateral, Bilateral]
+  contraction: [Concentric, Eccentric, Isometric, Mixed]
+  equipment: [Floor, Bar, Rings, Parallettes, Dumbbell, Kettlebell, Other]
