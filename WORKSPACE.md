@@ -92,3 +92,15 @@ _Use this space for quick thoughts_
 ---
 
 *Last updated: Use `date` command to check*
+## 🚀 Active Projects
+
+### 🔴 Priority
+1. [x] AI Hub Setup ✅
+2. [ ] **Perplexity Migration** 🧠
+   - [View Details](projects/active/perplexity-migration.md)
+   - Status: 🛠️ Extraction Ready
+   - Assets: 8 videos + 9 files
+
+### Commands
+`aimigrate` → Jump to migration hub
+
