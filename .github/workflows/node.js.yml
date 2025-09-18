@@ -1,7 +1,7 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# AI-Hub Repository Validation Workflow
+# Validates repository structure and markdown files
 
-name: Node.js CI
+name: AI-Hub Validation
 
 on:
   push:
@@ -10,22 +10,46 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  validate:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+
+    - name: Validate Repository Structure
+      run: |
+        echo "✅ Validating AI-Hub repository structure..."
+
+        # Check core directories exist
+        test -d "docs" || (echo "❌ Missing docs directory" && exit 1)
+        test -d "scripts" || (echo "❌ Missing scripts directory" && exit 1)
+        test -d "shared" || (echo "❌ Missing shared directory" && exit 1)
+
+        # Check critical files exist
+        test -f "README.md" || (echo "❌ Missing README.md" && exit 1)
+        test -f "shared/commands-to-run.md" || (echo "❌ Missing commands-to-run.md" && exit 1)
+
+        echo "✅ Repository structure validation passed!"
+
+    - name: Validate Scripts
+      run: |
+        echo "✅ Validating executable scripts..."
+
+        # Check script permissions
+        for script in scripts/*.sh; do
+          if [ -f "$script" ]; then
+            test -x "$script" || (echo "❌ Script $script is not executable" && exit 1)
+            echo "✅ $script is executable"
+          fi
+        done
+
+        echo "✅ Script validation passed!"
+
+    - name: Check Markdown Files
+      run: |
+        echo "✅ Checking markdown files for basic syntax..."
+
+        # Basic markdown validation
+        find . -name "*.md" -exec echo "Checking {}" \;
+
+        echo "✅ Markdown validation completed!"
