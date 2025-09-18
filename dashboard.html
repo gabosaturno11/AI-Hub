@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0a0a0a;
+            --secondary-bg: #121212;
+            --tertiary-bg: #1a1a1a;
+            --primary-text: #ffffff;
+            --secondary-text: #e0e0e0;
+            --muted-text: #888;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-tertiary: #1fb8cd;
+            --border-color: #333;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            grid-template-rows: auto 1fr;
+            grid-template-areas:
+                "header header header"
+                "sidebar main widgets";
+            height: 100vh;
+        }
+
+        .header {
+            grid-area: header;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--secondary-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            color: var(--muted-text);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--secondary-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--glass-bg);
+            color: var(--primary-text);
+            border-left-color: var(--accent-primary);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            grid-area: main;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--primary-bg);
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+        }
+
+        .content-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content-subtitle {
+            color: var(--muted-text);
+            font-size: 16px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            color: var(--secondary-text);
+            line-height: 1.6;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .widgets {
+            grid-area: widgets;
+            background: var(--secondary-bg);
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .widget {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .widget-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary-text);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--muted-text);
+        }
+
+        .activity-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted-text);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>AI Hub</span>
+            </div>
+            <div class="header-actions">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Connected</span>
+                </div>
+                <span id="computer-name">Loading...</span>
+            </div>
+        </header>
+
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <a href="#" class="nav-item active">
+                    <i class="nav-icon fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-folder"></i>
+                    <span>Projects</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-calendar"></i>
+                    <span>Daily</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-cog"></i>
+                    <span>Scripts</span>
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-title">Tools</div>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-terminal"></i>
+                    <span>Terminal</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-puzzle-piece"></i>
+                    <span>Extensions</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="nav-icon fas fa-book"></i>
+                    <span>Documentation</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h1 class="content-title">AI Hub Dashboard</h1>
+                <p class="content-subtitle">Your unified command center across all computers</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="card-title">Quick Start</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Get started with your AI Hub workspace</p>
+                        <div class="quick-actions">
+                            <button class="btn" onclick="runCommand('ai')">
+                                <i class="fas fa-play"></i>
+                                Open Hub
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #1fb8cd, #50e3c2);">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <h3 class="card-title">Sync Status</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="metric">
+                            <span>Last Sync</span>
+                            <span class="metric-value" id="last-sync">--</span>
+                        </div>
+                        <div class="metric">
+                            <span>Status</span>
+                            <span class="metric-value" style="color: #00ff88;">Connected</span>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="btn" onclick="runCommand('aisync')">
+                                <i class="fas fa-download"></i>
+                                Sync Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #ff6b6b, #ffa500);">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <h3 class="card-title">Active Projects</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="metric">
+                            <span>AI Hub Setup</span>
+                            <span style="color: #00ff88;">✅</span>
+                        </div>
+                        <div class="metric">
+                            <span>Writing Hub</span>
+                            <span style="color: #ffa500;">🛠️</span>
+                        </div>
+                        <div class="metric">
+                            <span>Chrome Extension</span>
+                            <span style="color: #ffa500;">🛠️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #a855f7);">
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <h3 class="card-title">Commands</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Essential AI Hub commands</p>
+                        <div style="margin-top: 15px; font-family: monospace; font-size: 12px; line-height: 1.8;">
+                            <div><code>ai</code> - Go to Hub</div>
+                            <div><code>aipush</code> - Save changes</div>
+                            <div><code>aipull</code> - Get updates</div>
+                            <div><code>aiinfo</code> - System info</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="widgets">
+            <div class="widget">
+                <h4 class="widget-title">Recent Activity</h4>
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <span>SSH key configured</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <span>Repository synced</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <span>Notion guide added</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <span>Writing hub deployed</span>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h4 class="widget-title">System Status</h4>
+                <div style="font-size: 12px; line-height: 1.6;">
+                    <div style="margin-bottom: 8px;">
+                        <strong>SSH:</strong> <span style="color: #00ff88;">Connected</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <strong>GitHub:</strong> <span style="color: #00ff88;">Synced</span>
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                        <strong>Storage:</strong> <span style="color: #00ff88;">Available</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            updateComputerName();
+            updateLastSync();
+        });
+
+        function updateComputerName() {
+            // This would normally fetch from system
+            document.getElementById('computer-name').textContent = 'Mac (Current)';
+        }
+
+        function updateLastSync() {
+            document.getElementById('last-sync').textContent = 'Just now';
+        }
+
+        function runCommand(command) {
+            // In a real implementation, this would execute the command
+            alert(`Running: ${command}\n\nIn a terminal, you would run this command to execute it.`);
+        }
+
+        // Add click handlers for navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // Remove active class from all items
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+                // Add active class to clicked item
+                item.classList.add('active');
+
+                // Update content based on selection
+                const text = item.querySelector('span').textContent;
+                document.querySelector('.content-title').textContent = `${text} Dashboard`;
+            });
+        });
+    </script>
+</body>
+</html>
