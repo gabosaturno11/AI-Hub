@@ -1,1 +1,9 @@
+.DS_Store
+node_modules/
+*.log
+.env
+.vscode/
+Thumbs.db
+*.swp
+*.tmp
 config/.env.local
