@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voice Program Creator - Saturno Movement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0a192f 0%, #032b35 40%, #00483f 100%);
+      color: #e6f7f2;
+      margin: 0;
+      min-height: 100vh;
+      line-height: 1.4;
+    }
+    
+    .header {
+      background: linear-gradient(90deg, #0a192f, #21d4fd, #00ffa1);
+      color: #fff;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 4px 28px #008b7a55;
+    }
+    
+    .header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+    
+    .subtitle {
+      font-size: 1rem;
+      color: #77ffe2;
+      margin-top: 0.5rem;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    
+    .sidebar, .main {
+      background: rgba(20, 38, 55, 0.9);
+      border: 1.5px solid #21d4fd55;
+      border-radius: 18px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .title {
+      background: linear-gradient(90deg, #21d4fd, #00ffa1);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-weight: 800;
+      margin: 0 0 1rem 0;
+      font-size: 1.3rem;
+    }
+    
+    .voice-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #00ffa1, #1dd2ff);
+      color: #091821;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1rem;
+    }
+    
+    .voice-btn:hover {
+      transform: scale(1.02);
+    }
+    
+    .voice-btn.recording {
+      background: linear-gradient(90deg, #ff4757, #ff6b7a);
+      color: #fff;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .voice-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.02); }
+    }
+    
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .btn {
+      background: #1e3a4a;
+      border: 1px solid #21d4fd77;
+      color: #c7fff0;
+      padding: 0.6rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      background: #2a4a5a;
+      border-color: #00ffa1;
+    }
+    
+    .log {
+      background: #0e2d2c;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #00ffa133;
+      color: #bffef0;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      scroll-behavior: smooth;
+    }
+    
+    .commands {
+      background: #0e2d2c;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #00ffa133;
+      margin-bottom: 1rem;
+    }
+    
+    .commands h4 {
+      color: #00ffa1;
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+    }
+    
+    .commands ul {
+      margin: 0;
+      padding-left: 1rem;
+      font-size: 0.8rem;
+      color: #bffef0;
+    }
+    
+    .commands li {
+      margin-bottom: 0.3rem;
+    }
+    
+    .week-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .week-nav button {
+      background: #1e3a4a;
+      border: 1px solid #21d4fd77;
+      color: #c7fff0;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .week-nav button:hover {
+      background: #2a4a5a;
+      border-color: #00ffa1;
+    }
+    
+    .week-nav button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .week-display {
+      font-weight: 700;
+      color: #00ffa1;
+      font-size: 1.1rem;
+    }
+    
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .day {
+      min-height: 100px;
+      border-radius: 12px;
+      border: 1.5px solid #21d4fd66;
+      background: #123041c9;
+      padding: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .day:hover {
+      box-shadow: 0 0 0 3px #00ffa177;
+    }
+    
+    .day.has-workout {
+      border-color: #00ffa1;
+      background: linear-gradient(135deg, #21d4fd1f, #00ffa114);
+    }
+    
+    .day-label {
+      font-size: 0.75rem;
+      color: #86ffe0;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    
+    .day-content {
+      font-weight: 700;
+      font-size: 0.8rem;
+      word-wrap: break-word;
+    }
+    
+    .clear-day {
+      position: absolute;
+      top: 0.2rem;
+      right: 0.2rem;
+      background: rgba(255, 71, 87, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      cursor: pointer;
+      display: none;
+    }
+    
+    .day.has-workout:hover .clear-day {
+      display: block;
+    }
+    
+    .workout-list {
+      margin-top: 1rem;
+    }
+    
+    .workout-item {
+      background: linear-gradient(135deg, #21d4fd1f, #00ffa114);
+      border: 1px solid #21d4fd88;
+      border-radius: 10px;
+      padding: 0.8rem;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .workout-item:hover {
+      border-color: #00ffa1;
+      transform: translateY(-1px);
+    }
+    
+    .workout-item.selected {
+      border-color: #00ffa1;
+      box-shadow: 0 0 0 2px rgba(0, 255, 161, 0.3);
+    }
+    
+    .workout-name {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    
+    .exercise-list {
+      font-size: 0.75rem;
+      color: #94ffe8;
+      line-height: 1.3;
+    }
+    
+    .delete-workout {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(255, 71, 87, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .workout-item:hover .delete-workout {
+      opacity: 1;
+    }
+    
+    .status {
+      padding: 0.6rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    .status.success {
+      background: rgba(0, 255, 161, 0.1);
+      border: 1px solid #00ffa133;
+      color: #00ffa1;
+    }
+    
+    .status.error {
+      background: rgba(255, 71, 87, 0.1);
+      border: 1px solid #ff473733;
+      color: #ff4757;
+    }
+    
+    .exercise-detail {
+      background: #0a1f1e;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #21d4fd33;
+      margin-top: 1rem;
+    }
+    
+    .exercise-detail h4 {
+      color: #21d4fd;
+      margin: 0 0 0.5rem 0;
+    }
+    
+    .exercise-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    
+    .exercise-table th,
+    .exercise-table td {
+      padding: 0.4rem;
+      text-align: left;
+      border-bottom: 1px solid #21d4fd33;
+    }
+    
+    .exercise-table th {
+      color: #21d4fd;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .container {
+        padding: 0.5rem;
+      }
+      
+      .calendar {
+        gap: 4px;
+      }
+      
+      .day {
+        min-height: 80px;
+        padding: 0.4rem;
+      }
+      
+      .controls {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Voice Program Creator</h1>
+    <div class="subtitle">Create Complete Workout Programs with Voice Commands</div>
+  </div>
+
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h3 class="title">Voice Control</h3>
+      
+      <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceRecognition()">
+        🎤 Start Voice Commands
+      </button>
+
+      <div class="controls">
+        <button class="btn" onclick="clearAllData()">Clear All</button>
+        <button class="btn" onclick="exportProgram()">Export JSON</button>
+        <button class="btn" onclick="showHelp()">Help</button>
+        <button class="btn" onclick="undoLastAction()">Undo</button>
+      </div>
+
+      <div id="statusMessage"></div>
+
+      <div class="commands">
+        <h4>Voice Commands:</h4>
+        <ul>
+          <li>"Create workout Upper Body"</li>
+          <li>"Add Pull Ups 3 sets 8 reps"</li>
+          <li>"Add Dragon Squat 4 by 6 rest 2 minutes"</li>
+          <li>"Assign Upper Body to Monday week 1"</li>
+          <li>"Remove last exercise"</li>
+          <li>"Delete workout Upper Body"</li>
+          <li>"Clear Tuesday week 2"</li>
+          <li>"Show workout details"</li>
+        </ul>
+      </div>
+
+      <div class="log" id="voiceLog">Ready for voice commands...</div>
+
+      <div class="workout-list">
+        <h4 class="title">Workouts</h4>
+        <div id="workoutList"></div>
+      </div>
+    </div>
+
+    <!-- Main Calendar -->
+    <div class="main">
+      <h3 class="title">4-Week Program Calendar</h3>
+      
+      <div class="week-nav">
+        <button onclick="changeWeek(-1)" id="prevWeekBtn">← Previous</button>
+        <div class="week-display" id="weekDisplay">Week 1</div>
+        <button onclick="changeWeek(1)" id="nextWeekBtn">Next →</button>
+      </div>
+      
+      <div class="calendar" id="calendar"></div>
+      
+      <div id="workoutDetails"></div>
+    </div>
+  </div>
+
+  <script>
+    // Global state
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const dayShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    
+    let currentWeek = 0;
+    let workouts = [];
+    let calendar = Array(28).fill(null);
+    let currentWorkout = null;
+    let recognition = null;
+    let isListening = false;
+    let actionHistory = [];
+
+    // Exercise database with common exercises
+    const exerciseDB = {
+      'pull ups': { defaultSets: 3, defaultReps: '8-12', defaultRest: '90s', notes: 'Full ROM' },
+      'push ups': { defaultSets: 3, defaultReps: '10-15', defaultRest: '60s', notes: 'Full range' },
+      'dragon squat': { defaultSets: 3, defaultReps: 'AMRAP', defaultRest: '90s', notes: 'Focus on form' },
+      'squats': { defaultSets: 3, defaultReps: '12-15', defaultRest: '60s', notes: 'Depth focus' },
+      'dips': { defaultSets: 3, defaultReps: '8-12', defaultRest: '90s', notes: 'Control descent' },
+      'lunges': { defaultSets: 3, defaultReps: '10 each', defaultRest: '60s', notes: 'Balance' }
+    };
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadState();
+      initVoiceRecognition();
+      renderAll();
+      logVoice('System ready. Try: "Create workout Upper Body"');
+    });
+
+    // Data persistence
+    function saveState() {
+      const state = {
+        workouts,
+        calendar,
+        currentWeek,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('voiceProgramCreator', JSON.stringify(state));
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('voiceProgramCreator');
+        if (saved) {
+          const state = JSON.parse(saved);
+          workouts = state.workouts || [];
+          calendar = state.calendar || Array(28).fill(null);
+          currentWeek = state.currentWeek || 0;
+          
+          // Restore current workout reference
+          if (workouts.length > 0) {
+            currentWorkout = workouts[workouts.length - 1];
+          }
+        }
+      } catch (error) {
+        logVoice('Error loading saved data');
+      }
+    }
+
+    function addToHistory(action) {
+      actionHistory.push({
+        action,
+        workouts: JSON.parse(JSON.stringify(workouts)),
+        calendar: [...calendar],
+        timestamp: Date.now()
+      });
+      
+      // Keep only last 10 actions
+      if (actionHistory.length > 10) {
+        actionHistory.shift();
+      }
+    }
+
+    function undoLastAction() {
+      if (actionHistory.length === 0) {
+        showStatus('Nothing to undo', 'error');
+        return;
+      }
+      
+      const lastAction = actionHistory.pop();
+      workouts = lastAction.workouts;
+      calendar = lastAction.calendar;
+      
+      saveState();
+      renderAll();
+      showStatus(`Undid: ${lastAction.action}`, 'success');
+      logVoice(`Undid: ${lastAction.action}`);
+    }
+
+    // Voice recognition
+    function initVoiceRecognition() {
+      // Check for HTTPS requirement
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+        showStatus('Voice requires HTTPS. Use Chrome and serve over HTTPS.', 'error');
+        logVoice('Voice recognition requires HTTPS or localhost');
+        document.getElementById('voiceBtn').disabled = true;
+        return false;
+      }
+
+      // Check browser support
+      if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        showStatus('Voice recognition not supported. Use Chrome browser.', 'error');
+        document.getElementById('voiceBtn').disabled = true;
+        logVoice('Browser does not support voice recognition');
+        return false;
+      }
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      
+      // Configure recognition settings
+      recognition.continuous = false; // Changed to false for better reliability
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        isListening = true;
+        document.getElementById('voiceBtn').classList.add('recording');
+        document.getElementById('voiceBtn').textContent = '🔴 Listening... (Click to Stop)';
+        logVoice('Listening for commands... Speak now!');
+        showStatus('Listening... Speak your command', 'success');
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        document.getElementById('voiceBtn').classList.remove('recording');
+        document.getElementById('voiceBtn').textContent = '🎤 Start Voice Commands';
+        logVoice('Stopped listening');
+      };
+
+      recognition.onresult = (event) => {
+        if (event.results.length > 0) {
+          const transcript = event.results[0][0].transcript.trim();
+          const confidence = event.results[0][0].confidence;
+          
+          logVoice(`Heard: "${transcript}" (confidence: ${Math.round(confidence * 100)}%)`);
+          
+          if (confidence > 0.5 || !confidence) { // Some browsers don't report confidence
+            processVoiceCommand(transcript);
+          } else {
+            logVoice('Low confidence, please repeat command');
+            showStatus('Could not understand clearly. Please repeat.', 'error');
+          }
+        }
+      };
+
+      recognition.onerror = (event) => {
+        isListening = false;
+        document.getElementById('voiceBtn').classList.remove('recording');
+        document.getElementById('voiceBtn').textContent = '🎤 Start Voice Commands';
+        
+        let errorMessage = '';
+        switch(event.error) {
+          case 'no-speech':
+            errorMessage = 'No speech detected. Try speaking louder.';
+            break;
+          case 'audio-capture':
+            errorMessage = 'Microphone access denied or unavailable.';
+            break;
+          case 'not-allowed':
+            errorMessage = 'Microphone permission denied. Please allow microphone access.';
+            break;
+          case 'network':
+            errorMessage = 'Network error. Check internet connection.';
+            break;
+          case 'service-not-allowed':
+            errorMessage = 'Speech service not allowed. Try HTTPS.';
+            break;
+          default:
+            errorMessage = `Voice error: ${event.error}`;
+        }
+        
+        logVoice(`Error: ${errorMessage}`);
+        showStatus(errorMessage, 'error');
+      };
+
+      // Test microphone access
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(() => {
+          logVoice('Microphone access granted');
+          showStatus('Voice recognition ready', 'success');
+        })
+        .catch((err) => {
+          logVoice(`Microphone error: ${err.message}`);
+          showStatus('Microphone access required for voice commands', 'error');
+        });
+
+      return true;
+    }
+
+    function toggleVoiceRecognition() {
+      if (!recognition) {
+        if (initVoiceRecognition()) {
+          setTimeout(() => toggleVoiceRecognition(), 100);
+        }
+        return;
+      }
+      
+      if (isListening) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (error) {
+          logVoice(`Failed to start: ${error.message}`);
+          showStatus('Could not start voice recognition', 'error');
+          
+          // Reset recognition object and try again
+          recognition = null;
+          setTimeout(() => {
+            if (initVoiceRecognition()) {
+              setTimeout(() => recognition.start(), 100);
+            }
+          }, 500);
+        }
+      }
+    }
+
+    // Voice command processing
+    function processVoiceCommand(command) {
+      const cmd = command.toLowerCase().trim();
+      
+      // Create workout
+      const createMatch = cmd.match(/create workout (.+)/);
+      if (createMatch) {
+        const workoutName = createMatch[1].trim().toUpperCase();
+        addToHistory('create workout');
+        
+        currentWorkout = {
+          name: workoutName,
+          exercises: [],
+          created: new Date().toISOString()
+        };
+        workouts.push(currentWorkout);
+        
+        saveState();
+        renderAll();
+        showStatus(`Created workout: ${workoutName}`, 'success');
+        logVoice(`✅ Created workout: ${workoutName}`);
+        return;
+      }
+
+      // Delete workout
+      const deleteMatch = cmd.match(/delete workout (.+)/);
+      if (deleteMatch) {
+        const workoutName = deleteMatch[1].trim().toUpperCase();
+        const workoutIndex = workouts.findIndex(w => w.name.toLowerCase().includes(workoutName.toLowerCase()));
+        
+        if (workoutIndex >= 0) {
+          addToHistory('delete workout');
+          const deletedName = workouts[workoutIndex].name;
+          workouts.splice(workoutIndex, 1);
+          
+          // Remove from calendar
+          calendar = calendar.map(slot => slot && slot.name === deletedName ? null : slot);
+          
+          if (currentWorkout && currentWorkout.name === deletedName) {
+            currentWorkout = workouts.length > 0 ? workouts[workouts.length - 1] : null;
+          }
+          
+          saveState();
+          renderAll();
+          showStatus(`Deleted workout: ${deletedName}`, 'success');
+          logVoice(`✅ Deleted workout: ${deletedName}`);
+        } else {
+          logVoice(`❌ Workout "${workoutName}" not found`);
+        }
+        return;
+      }
+
+      // Add exercise patterns
+      const addPatterns = [
+        /add (?:exercise )?(.+?) (\d+) sets (\d+) reps/,
+        /add (?:exercise )?(.+?) (\d+) by (\d+)/,
+        /add (?:exercise )?(.+?) (\d+) x (\d+)/,
+        /add (.+?) (\d+) sets (\d+) reps/,
+        /add (.+?) (\d+) by (\d+)/,
+        /add (.+?) (\d+) x (\d+)/
+      ];
+
+      for (const pattern of addPatterns) {
+        const match = cmd.match(pattern);
+        if (match) {
+          if (!currentWorkout) {
+            currentWorkout = { 
+              name: 'VOICE WORKOUT', 
+              exercises: [],
+              created: new Date().toISOString()
+            };
+            workouts.push(currentWorkout);
+          }
+          
+          addToHistory('add exercise');
+          
+          const exerciseName = match[1].trim();
+          const sets = match[2];
+          const reps = match[3];
+          
+          // Parse rest period
+          const restMatch = cmd.match(/rest (\d+) ?(second|seconds|sec|min|minute|minutes)/);
+          let rest = '90s';
+          if (restMatch) {
+            const time = restMatch[1];
+            const unit = restMatch[2];
+            rest = unit.startsWith('min') ? time + 'min' : time + 's';
+          }
+
+          // Check exercise database for defaults
+          const dbEntry = exerciseDB[exerciseName.toLowerCase()];
+          if (dbEntry && !restMatch) {
+            rest = dbEntry.defaultRest;
+          }
+
+          const exercise = {
+            name: exerciseName,
+            sets: sets,
+            reps: reps,
+            rest: rest,
+            notes: dbEntry ? dbEntry.notes : ''
+          };
+
+          currentWorkout.exercises.push(exercise);
+          
+          saveState();
+          renderAll();
+          showStatus(`Added: ${exerciseName}`, 'success');
+          logVoice(`✅ Added: ${exerciseName} ${sets}x${reps} (${rest})`);
+          return;
+        }
+      }
+
+      // Remove last exercise
+      if (cmd.includes('remove last') || cmd.includes('delete last')) {
+        if (currentWorkout && currentWorkout.exercises.length > 0) {
+          addToHistory('remove exercise');
+          const removed = currentWorkout.exercises.pop();
+          saveState();
+          renderAll();
+          showStatus(`Removed: ${removed.name}`, 'success');
+          logVoice(`✅ Removed: ${removed.name}`);
+        } else {
+          logVoice('❌ No exercises to remove');
+        }
+        return;
+      }
+
+      // Assign workout to calendar
+      const assignMatch = cmd.match(/assign (.+?) to (monday|tuesday|wednesday|thursday|friday|saturday|sunday) week (\d+)/);
+      if (assignMatch) {
+        const workoutName = assignMatch[1].trim();
+        const dayName = assignMatch[2];
+        const week = parseInt(assignMatch[3]) - 1;
+        
+        const workout = workouts.find(w => w.name.toLowerCase().includes(workoutName.toLowerCase()));
+        if (workout) {
+          addToHistory('assign workout');
+          const dayIndex = days.findIndex(d => d.toLowerCase() === dayName);
+          const calendarIndex = week * 7 + dayIndex;
+          
+          if (dayIndex >= 0 && calendarIndex < 28 && calendarIndex >= 0) {
+            calendar[calendarIndex] = workout;
+            saveState();
+            renderAll();
+            showStatus(`Assigned ${workout.name} to ${dayName} Week ${week + 1}`, 'success');
+            logVoice(`✅ Assigned ${workout.name} to ${dayName} Week ${week + 1}`);
+          } else {
+            logVoice('❌ Invalid day or week');
+          }
+        } else {
+          logVoice(`❌ Workout not found: "${workoutName}"`);
+        }
+        return;
+      }
+
+      // Clear calendar day
+      const clearMatch = cmd.match(/clear (monday|tuesday|wednesday|thursday|friday|saturday|sunday) week (\d+)/);
+      if (clearMatch) {
+        addToHistory('clear day');
+        const dayName = clearMatch[1];
+        const week = parseInt(clearMatch[2]) - 1;
+        const dayIndex = days.findIndex(d => d.toLowerCase() === dayName);
+        const calendarIndex = week * 7 + dayIndex;
+        
+        if (calendarIndex >= 0 && calendarIndex < 28) {
+          calendar[calendarIndex] = null;
+          saveState();
+          renderAll();
+          showStatus(`Cleared ${dayName} Week ${week + 1}`, 'success');
+          logVoice(`✅ Cleared ${dayName} Week ${week + 1}`);
+        }
+        return;
+      }
+
+      // Show workout details
+      if (cmd.includes('show') && (cmd.includes('workout') || cmd.includes('details'))) {
+        if (currentWorkout && currentWorkout.exercises.length > 0) {
+          showWorkoutDetails(currentWorkout);
+          logVoice(`📋 Showing details for: ${currentWorkout.name}`);
+        } else {
+          logVoice('❌ No current workout to show');
+        }
+        return;
+      }
+
+      // Go to week
+      const weekMatch = cmd.match(/(?:go to|show) week (\d+)/);
+      if (weekMatch) {
+        const week = parseInt(weekMatch[1]) - 1;
+        if (week >= 0 && week < 4) {
+          currentWeek = week;
+          renderCalendar();
+          logVoice(`✅ Switched to Week ${week + 1}`);
+        } else {
+          logVoice('❌ Week must be 1-4');
+        }
+        return;
+      }
+
+      // If no command matched
+      logVoice(`❓ Command not recognized: "${command}"`);
+      showStatus('Command not recognized. Say "help" for commands.', 'error');
+    }
+
+    // UI Functions
+    function showStatus(message, type = 'success') {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.className = `status ${type}`;
+      statusEl.textContent = message;
+      
+      setTimeout(() => {
+        statusEl.textContent = '';
+        statusEl.className = '';
+      }, 3000);
+    }
+
+    function logVoice(message) {
+      const log = document.getElementById('voiceLog');
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.innerHTML = `[${time}] ${message}`;
+      log.appendChild(entry);
+      log.scrollTop = log.scrollHeight;
+      
+      // Keep only last 50 entries
+      while (log.children.length > 50) {
+        log.removeChild(log.firstChild);
+      }
+    }
+
+    function renderAll() {
+      renderWorkouts();
+      renderCalendar();
+      updateWeekNavigation();
+    }
+
+    function renderWorkouts() {
+      const container = document.getElementById('workoutList');
+      if (workouts.length === 0) {
+        container.innerHTML = '<div style="color: #94ffe8; font-size: 0.9rem; text-align: center; padding: 1rem;">No workouts created yet</div>';
+        return;
+      }
+      
+      container.innerHTML = workouts.map((workout, index) => `
+        <div class="workout-item ${currentWorkout === workout ? 'selected' : ''}" 
+             onclick="selectWorkout(${index})">
+          <button class="delete-workout" onclick="event.stopPropagation(); deleteWorkout(${index})" title="Delete workout">×</button>
+          <div class="workout-name">${workout.name}</div>
+          <div class="exercise-list">
+            ${workout.exercises.length === 0 ? 'No exercises yet' : 
+              workout.exercises.map(ex => `${ex.name} ${ex.sets}x${ex.reps}`).join(' • ')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCalendar() {
+      const container = document.getElementById('calendar');
+      const startDay = currentWeek * 7;
+      
+      let html = '';
+      for (let i = 0; i < 7; i++) {
+        const calIndex = startDay + i;
+        const workout = calendar[calIndex];
+        const hasWorkout = workout !== null;
+        
+        html += `
+          <div class="day ${hasWorkout ? 'has-workout' : ''}" onclick="dayClick(${calIndex})">
+            ${hasWorkout ? `<button class="clear-day" onclick="event.stopPropagation(); clearDay(${calIndex})" title="Clear day">×</button>` : ''}
+            <div class="day-label">${dayShort[i]} W${currentWeek + 1}</div>
+            <div class="day-content">
+              ${hasWorkout ? workout.name : 'Rest Day'}
+            </div>
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function updateWeekNavigation() {
+      document.getElementById('weekDisplay').textContent = `Week ${currentWeek + 1}`;
+      document.getElementById('prevWeekBtn').disabled = currentWeek === 0;
+      document.getElementById('nextWeekBtn').disabled = currentWeek === 3;
+    }
+
+    function selectWorkout(index) {
+      currentWorkout = workouts[index];
+      renderWorkouts();
+      logVoice(`Selected workout: ${currentWorkout.name}`);
+    }
+
+    function deleteWorkout(index) {
+      if (confirm(`Delete workout "${workouts[index].name}"?`)) {
+        addToHistory('delete workout');
+        const deletedName = workouts[index].name;
+        workouts.splice(index, 1);
+        
+        // Remove from calendar
+        calendar = calendar.map(slot => slot && slot.name === deletedName ? null : slot);
+        
+        if (currentWorkout && currentWorkout.name === deletedName) {
+          currentWorkout = workouts.length > 0 ? workouts[0] : null;
+        }
+        
+        saveState();
+        renderAll();
+        showStatus(`Deleted: ${deletedName}`, 'success');
+      }
+    }
+
+    function dayClick(index) {
+      const workout = calendar[index];
+      if (workout) {
+        showWorkoutDetails(workout);
+      }
+    }
+
+    function clearDay(index) {
+      addToHistory('clear day');
+      calendar[index] = null;
+      saveState();
+      renderCalendar();
+      
+      const week = Math.floor(index / 7) + 1;
+      const day = days[index % 7];
+      showStatus(`Cleared ${day} Week ${week}`, 'success');
+    }
+
+    function changeWeek(direction) {
+      const newWeek = currentWeek + direction;
+      if (newWeek >= 0 && newWeek < 4) {
+        currentWeek = newWeek;
+        renderCalendar();
+        updateWeekNavigation();
+      }
+    }
+
+    function showWorkoutDetails(workout) {
+      const container = document.getElementById('workoutDetails');
+      
+      if (!workout || workout.exercises.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      const exerciseRows = workout.exercises.map(ex => `
+        <tr>
+          <td>${ex.name}</td>
+          <td>${ex.sets}</td>
+          <td>${ex.reps}</td>
+          <td>${ex.rest}</td>
+          <td style="font-size: 0.75rem;">${ex.notes}</td>
+        </tr>
+      `).join('');
+      
+      container.innerHTML = `
+        <div class="exercise-detail">
+          <h4>${workout.name} - ${workout.exercises.length} exercises</h4>
+          <table class="exercise-table">
+            <thead>
+              <tr>
+                <th>Exercise</th>
+                <th>Sets</th>
+                <th>Reps</th>
+                <th>Rest</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${exerciseRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Utility functions
+    function clearAllData() {
+      if (confirm('Clear all workouts and calendar data? This cannot be undone.')) {
+        workouts = [];
+        calendar = Array(28).fill(null);
+        currentWorkout = null;
+        actionHistory = [];
+        currentWeek = 0;
+        
+        localStorage.removeItem('voiceProgramCreator');
+        renderAll();
+        document.getElementById('workoutDetails').innerHTML = '';
+        showStatus('All data cleared', 'success');
+        logVoice('🗑️ All data cleared');
+      }
+    }
+
+    function exportProgram() {
+      const data = {
+        workouts,
+        calendar,
+        exportDate: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `saturno-program-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showStatus('Program exported successfully', 'success');
+      logVoice('📤 Program exported as JSON');
+    }
+
+    function showHelp() {
+      const helpText = `
+Voice Commands:
+• "Create workout [name]" - Start new workout
+• "Add [exercise] [sets] sets [reps] reps" - Add exercise
+• "Add [exercise] [sets] by [reps] rest [time] seconds" - Add with rest
+• "Remove last exercise" - Remove last added exercise
+• "Delete workout [name]" - Delete entire workout
+• "Assign [workout] to [day] week [number]" - Schedule workout
+• "Clear [day] week [number]" - Remove workout from day
+• "Show workout details" - Display current workout
+• "Go to week [number]" - Switch calendar view
+
+Examples:
+• "Create workout Push Day"
+• "Add Push Ups 3 sets 12 reps"
+• "Add Pull Ups 4 by 8 rest 2 minutes"
+• "Assign Push Day to Monday week 1"
+      `;
+      alert(helpText);
+    }
+  </script>
+</body>
+</html>

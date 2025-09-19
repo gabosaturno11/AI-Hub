@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified AI Hub Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ade80, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .systems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .system-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .system-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .system-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .system-description {
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .system-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .action-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .action-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .quick-commands {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .command-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9em;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .status-bar {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @media (max-width: 768px) {
+            .systems-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 Unified AI Hub Dashboard</h1>
+            <p>SM AI-Command OS + AOC Master Integration</p>
+        </div>
+
+        <!-- Systems Grid -->
+        <div class="systems-grid">
+            <!-- SM AI-Command OS -->
+            <div class="system-card" onclick="window.location.href='../docs/README.md'">
+                <div class="system-icon">🛠️</div>
+                <div class="system-title">SM AI-Command OS</div>
+                <div class="system-description">
+                    Core development environment with VS Code integration, git sync, and backup functionality.
+                </div>
+                <div class="system-actions">
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('sm open')">Open in VS Code</button>
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('sm sync')">Sync to iCloud</button>
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('sm status')">System Status</button>
+                </div>
+            </div>
+
+            <!-- AOC Master System -->
+            <div class="system-card" onclick="openAOCDashboard()">
+                <div class="system-icon">📖</div>
+                <div class="system-title">AOC Master</div>
+                <div class="system-description">
+                    Book production system with emoji organization, visual dashboards, and mode-based workflows.
+                </div>
+                <div class="system-actions">
+                    <button class="action-button" onclick="event.stopPropagation(); openAOCDashboard()">Main Dashboard</button>
+                    <button class="action-button" onclick="event.stopPropagation(); openModeSelector()">Mode Selector</button>
+                    <button class="action-button" onclick="event.stopPropagation(); openLiveStatus()">Live Status</button>
+                </div>
+            </div>
+
+            <!-- Documentation System -->
+            <div class="system-card" onclick="window.location.href='../docs/'">
+                <div class="system-icon">📚</div>
+                <div class="system-title">Documentation Hub</div>
+                <div class="system-description">
+                    Architecture guides, workflows, and comprehensive documentation for both systems.
+                </div>
+                <div class="system-actions">
+                    <button class="action-button" onclick="event.stopPropagation(); window.open('../docs/architecture.md')">Architecture</button>
+                    <button class="action-button" onclick="event.stopPropagation(); window.open('../docs/workflows.md')">Workflows</button>
+                    <button class="action-button" onclick="event.stopPropagation(); window.open('../docs/CLAUDE_PROMPT.md')">Claude Prompt</button>
+                </div>
+            </div>
+
+            <!-- Automation & Scripts -->
+            <div class="system-card" onclick="window.location.href='../scripts/'">
+                <div class="system-icon">⚙️</div>
+                <div class="system-title">Automation Scripts</div>
+                <div class="system-description">
+                    Sync scripts, backup automation, environment verification, and AI continuation prompts.
+                </div>
+                <div class="system-actions">
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('./scripts/verify-env.sh')">Verify Environment</button>
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('./scripts/continue-with-ai.sh')">AI Handoff</button>
+                    <button class="action-button" onclick="event.stopPropagation(); executeCommand('aisync')">Full Sync</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Commands -->
+        <div class="quick-commands">
+            <h2 style="text-align: center; margin-bottom: 20px;">⚡ Quick Commands</h2>
+            <div class="commands-grid">
+                <div class="command-item">sm open</div>
+                <div class="command-item">hub</div>
+                <div class="command-item">hub modes</div>
+                <div class="command-item">hub status</div>
+                <div class="command-item">aisync</div>
+                <div class="command-item">claude_sync_in</div>
+                <div class="command-item">gabo-tech</div>
+                <div class="command-item">gabo-rebel</div>
+                <div class="command-item">sm sync-dry</div>
+                <div class="command-item">hub check</div>
+                <div class="command-item">make dashboard</div>
+                <div class="command-item">book-status</div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>SM System: Connected</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>AOC Master: 61 files</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>iCloud: Synced</span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator"></div>
+                <span>Mode: Technical</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Open AOC Dashboard
+        function openAOCDashboard() {
+            window.open('../AOC_FRONTEND/AI_HUB_FRONTEND_DASHBOARD.html', '_blank');
+        }
+
+        // Open Mode Selector
+        function openModeSelector() {
+            window.open('../AOC_FRONTEND/AI_HUB_MODE_SELECTOR.html', '_blank');
+        }
+
+        // Open Live Status
+        function openLiveStatus() {
+            window.open('../AOC_FRONTEND/REAL_TIME_STATUS_TRACKER.html', '_blank');
+        }
+
+        // Execute terminal commands (placeholder)
+        function executeCommand(cmd) {
+            alert(`Command: ${cmd}\n\nRun this in your terminal to execute.`);
+        }
+
+        // Update status indicators
+        function updateStatus() {
+            console.log('Status updated');
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus();
+            console.log('Unified AI Hub Dashboard initialized');
+        });
+    </script>
+</body>
+</html>

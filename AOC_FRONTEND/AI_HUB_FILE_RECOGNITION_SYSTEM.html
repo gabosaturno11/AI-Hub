@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - File Recognition & Mapping System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ade80, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* File Type Recognition Grid */
+        .recognition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .file-type-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-type-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .file-icon {
+            font-size: 2.5em;
+        }
+
+        .category-mapping {
+            display: flex;
+            gap: 10px;
+            font-size: 1.5em;
+        }
+
+        .file-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .file-description {
+            font-size: 0.9em;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        .mapping-arrow {
+            font-size: 1.2em;
+            opacity: 0.6;
+            margin: 10px 0;
+        }
+
+        /* Folder Structure Section */
+        .folder-structure {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .structure-title {
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .folder-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .folder-card:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .folder-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .folder-name {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        /* Priority Level System */
+        .priority-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .priority-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .priority-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .priority-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .priority-description {
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+
+        /* Status Overlays */
+        .status-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            background: rgba(0,0,0,0.8);
+            border-radius: 50%;
+            padding: 8px;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Live Demo Section */
+        .demo-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .demo-files {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .demo-file {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .demo-file:hover {
+            transform: scale(1.02);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .demo-file-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .demo-file-name {
+            font-size: 0.8em;
+            opacity: 0.8;
+            word-break: break-all;
+        }
+
+        /* Color-coded borders */
+        .content-border { border-left: 4px solid #3b82f6; }
+        .operations-border { border-left: 4px solid #f97316; }
+        .personal-border { border-left: 4px solid #8b5cf6; }
+        .tech-border { border-left: 4px solid #374151; }
+
+        /* Animation classes */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+        }
+
+        .glow {
+            animation: glow 3s infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 2em; }
+            .recognition-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 AI Hub File Recognition System</h1>
+            <p>Intelligent file categorization with priority overlays and folder mapping</p>
+        </div>
+
+        <!-- File Type Recognition -->
+        <section class="recognition-section">
+            <h2 class="structure-title">📁 File Type Recognition</h2>
+            <div class="recognition-grid">
+                <div class="file-type-card content-border">
+                    <div class="file-header">
+                        <div class="file-icon">📋</div>
+                        <div class="category-mapping">🔵</div>
+                    </div>
+                    <div class="file-title">TOC Files</div>
+                    <div class="file-description">Table of Contents files automatically categorized to Content & Knowledge Hub</div>
+                    <div class="mapping-arrow">→ Content & Knowledge Hub (🔵)</div>
+                </div>
+
+                <div class="file-type-card content-border personal-border">
+                    <div class="file-header">
+                        <div class="file-icon">🎤</div>
+                        <div class="category-mapping">🔵🔺</div>
+                    </div>
+                    <div class="file-title">Voice Samples</div>
+                    <div class="file-description">Dual categorization: Content Creation + Personal Development</div>
+                    <div class="mapping-arrow">→ Content (🔵) + Personal (🔺)</div>
+                </div>
+
+                <div class="file-type-card personal-border">
+                    <div class="file-header">
+                        <div class="file-icon">💪</div>
+                        <div class="category-mapping">🔺</div>
+                    </div>
+                    <div class="file-title">Exercise Database</div>
+                    <div class="file-description">Physical training and wellness content</div>
+                    <div class="mapping-arrow">→ Personal & Well-being (🔺)</div>
+                </div>
+
+                <div class="file-type-card" style="border-left: 4px solid #8b5cf6;">
+                    <div class="file-header">
+                        <div class="file-icon">🧭</div>
+                        <div class="category-mapping">✨</div>
+                    </div>
+                    <div class="file-title">Philosophy</div>
+                    <div class="file-description">Universal Patterns (Mystic Mode compatible)</div>
+                    <div class="mapping-arrow">→ Universal Patterns ✨</div>
+                </div>
+
+                <div class="file-type-card tech-border">
+                    <div class="file-header">
+                        <div class="file-icon">🏗️</div>
+                        <div class="category-mapping">⬛</div>
+                    </div>
+                    <div class="file-title">Frameworks</div>
+                    <div class="file-description">Technical Mode structures and system architectures</div>
+                    <div class="mapping-arrow">→ Technical Mode ⬛</div>
+                </div>
+
+                <div class="file-type-card tech-border">
+                    <div class="file-header">
+                        <div class="file-icon">⚙️</div>
+                        <div class="category-mapping">⬛</div>
+                    </div>
+                    <div class="file-title">Scripts/Technical</div>
+                    <div class="file-description">Code, automation, and infrastructure files</div>
+                    <div class="mapping-arrow">→ Technology & Infrastructure (⬛)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Folder Structure Mapping -->
+        <section class="folder-structure">
+            <h2 class="structure-title">🗂️ Folder Structure Mapping</h2>
+            <div class="folder-grid">
+                <div class="folder-card operations-border">
+                    <div class="folder-header">
+                        <div class="folder-name">🎯 01_COMMAND_CENTER</div>
+                        <div class="category-mapping">🟧</div>
+                    </div>
+                    <div class="file-description">Operations & Workflow management</div>
+                </div>
+
+                <div class="folder-card content-border">
+                    <div class="folder-header">
+                        <div class="folder-name">🧠 02_KNOWLEDGE_VAULT</div>
+                        <div class="category-mapping">🔵</div>
+                    </div>
+                    <div class="file-description">Content & Knowledge Hub</div>
+                </div>
+
+                <div class="folder-card operations-border">
+                    <div class="folder-header">
+                        <div class="folder-name">🏭 03_PRODUCTION_LINE</div>
+                        <div class="category-mapping">🟧</div>
+                    </div>
+                    <div class="file-description">Operations & Workflow pipeline</div>
+                </div>
+
+                <div class="folder-card content-border">
+                    <div class="folder-header">
+                        <div class="folder-name">🎨 04_VISUAL_ARSENAL</div>
+                        <div class="category-mapping">🔵</div>
+                    </div>
+                    <div class="file-description">Content & Knowledge Hub visuals</div>
+                </div>
+
+                <div class="folder-card personal-border">
+                    <div class="folder-header">
+                        <div class="folder-name">💪 CALISTHENICS_MASTERY</div>
+                        <div class="category-mapping">🔺</div>
+                    </div>
+                    <div class="file-description">Personal & Well-being training</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Priority Level Integration -->
+        <section class="priority-section">
+            <h2 class="structure-title">⚡ Priority Level Integration</h2>
+            <div class="priority-grid">
+                <div class="priority-card" style="border: 2px solid #ef4444;">
+                    <div class="priority-icon">🔴</div>
+                    <div class="status-overlay">❗</div>
+                    <div class="priority-title">Critical</div>
+                    <div class="priority-description">Urgent status overlay (❗)</div>
+                </div>
+
+                <div class="priority-card" style="border: 2px solid #f59e0b;">
+                    <div class="priority-icon">🟡</div>
+                    <div class="status-overlay">⚡</div>
+                    <div class="priority-title">High</div>
+                    <div class="priority-description">In Progress status (⚡)</div>
+                </div>
+
+                <div class="priority-card" style="border: 2px solid #10b981;">
+                    <div class="priority-icon">🟢</div>
+                    <div class="priority-title">Medium</div>
+                    <div class="priority-description">Standard priority</div>
+                </div>
+
+                <div class="priority-card" style="border: 2px solid #8b5cf6;">
+                    <div class="priority-icon">🌟</div>
+                    <div class="status-overlay">✅💎</div>
+                    <div class="priority-title">Master</div>
+                    <div class="priority-description">Completed/Gems status</div>
+                </div>
+
+                <div class="priority-card glow" style="border: 2px solid #f97316;">
+                    <div class="priority-icon">🔥</div>
+                    <div class="status-overlay">☀️</div>
+                    <div class="priority-title">Hot</div>
+                    <div class="priority-description">Current focus (Today ☀️)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Demo -->
+        <section class="demo-section">
+            <h2 class="structure-title">🎮 Live File Recognition Demo</h2>
+            <p style="text-align: center; opacity: 0.8; margin-bottom: 20px;">
+                Click any file to see automatic categorization
+            </p>
+            <div class="demo-files">
+                <div class="demo-file content-border" onclick="categorizeFile('TOC_📋_Victory_Belt_v1.docx', '🔵', 'Content Hub')">
+                    <div class="demo-file-icon">📋🔵</div>
+                    <div class="status-overlay">✅</div>
+                    <div class="demo-file-name">TOC_📋_Victory_Belt_v1.docx</div>
+                </div>
+
+                <div class="demo-file personal-border" onclick="categorizeFile('EXERCISE_💪_Planche_Progressions.json', '🔺', 'Personal & Well-being')">
+                    <div class="demo-file-icon">💪🔺</div>
+                    <div class="status-overlay">⚡</div>
+                    <div class="demo-file-name">EXERCISE_💪_Planche_Progressions.json</div>
+                </div>
+
+                <div class="demo-file" style="border-left: 4px solid #8b5cf6;" onclick="categorizeFile('PHILOSOPHY_🧭_Movement_Core.md', '✨', 'Universal Patterns')">
+                    <div class="demo-file-icon">🧭✨</div>
+                    <div class="status-overlay">💎</div>
+                    <div class="demo-file-name">PHILOSOPHY_🧭_Movement_Core.md</div>
+                </div>
+
+                <div class="demo-file tech-border" onclick="categorizeFile('SCRIPT_⚙️_Auto_Organize.sh', '⬛', 'Technology & Infrastructure')">
+                    <div class="demo-file-icon">⚙️⬛</div>
+                    <div class="status-overlay">🔧</div>
+                    <div class="demo-file-name">SCRIPT_⚙️_Auto_Organize.sh</div>
+                </div>
+
+                <div class="demo-file content-border personal-border" onclick="categorizeFile('VOICE_🎤_Training_Wisdom.mp3', '🔵🔺', 'Content + Personal')">
+                    <div class="demo-file-icon">🎤🔵🔺</div>
+                    <div class="status-overlay">☀️</div>
+                    <div class="demo-file-name">VOICE_🎤_Training_Wisdom.mp3</div>
+                </div>
+
+                <div class="demo-file operations-border" onclick="categorizeFile('PROJECT_STATUS.md', '🟧', 'Operations & Workflow')">
+                    <div class="demo-file-icon">📋🟧</div>
+                    <div class="status-overlay">❗</div>
+                    <div class="demo-file-name">PROJECT_STATUS.md</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // File categorization logic
+        function categorizeFile(filename, category, destination) {
+            console.log(`Categorizing: ${filename}`);
+
+            // Visual feedback
+            event.currentTarget.style.transform = 'scale(1.1)';
+            event.currentTarget.style.background = 'rgba(59, 130, 246, 0.3)';
+
+            setTimeout(() => {
+                event.currentTarget.style.transform = 'scale(1)';
+                event.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+            }, 300);
+
+            // Show categorization result
+            const result = `File: ${filename}\nCategory: ${category}\nDestination: ${destination}`;
+            alert(result);
+
+            // Here you would implement actual file moving logic
+            console.log('File categorization complete');
+        }
+
+        // Auto-detection based on filename patterns
+        function detectFileType(filename) {
+            const patterns = {
+                'TOC_📋': '🔵',
+                'VOICE_🎤': '🔵🔺',
+                'EXERCISE_💪': '🔺',
+                'PHILOSOPHY_🧭': '✨',
+                'FRAMEWORK_🏗️': '⬛',
+                'SCRIPT_⚙️': '⬛'
+            };
+
+            for (const [pattern, category] of Object.entries(patterns)) {
+                if (filename.includes(pattern)) {
+                    return category;
+                }
+            }
+            return '🔵'; // Default to content
+        }
+
+        // Priority detection
+        function detectPriority(filename) {
+            if (filename.includes('CRITICAL') || filename.includes('URGENT')) return '🔴❗';
+            if (filename.includes('HOT') || filename.includes('TODAY')) return '🔥☀️';
+            if (filename.includes('MASTER') || filename.includes('FINAL')) return '🌟✅💎';
+            if (filename.includes('WIP') || filename.includes('PROGRESS')) return '🟡⚡';
+            return '🟢'; // Standard priority
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects
+            const demoFiles = document.querySelectorAll('.demo-file');
+            demoFiles.forEach(file => {
+                file.addEventListener('mouseenter', function() {
+                    this.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
+                });
+
+                file.addEventListener('mouseleave', function() {
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Simulate live recognition
+            console.log('AI Hub File Recognition System initialized');
+        });
+
+        // Real-time file watching simulation
+        setInterval(() => {
+            const statusOverlays = document.querySelectorAll('.status-overlay');
+            statusOverlays.forEach(overlay => {
+                if (overlay.textContent.includes('⚡') || overlay.textContent.includes('☀️')) {
+                    overlay.classList.add('pulse');
+                    setTimeout(() => overlay.classList.remove('pulse'), 2000);
+                }
+            });
+        }, 3000);
+    </script>
+</body>
+</html>

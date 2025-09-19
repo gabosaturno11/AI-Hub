@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Working Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-banner {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .working-section {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #10b981;
+        }
+
+        .broken-section {
+            background: rgba(239, 68, 68, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .testing-section {
+            background: rgba(245, 158, 11, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .action-button {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 15px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .working-button {
+            border-color: rgba(34, 197, 94, 0.5);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .working-button:hover {
+            border-color: rgba(34, 197, 94, 0.8);
+            background: rgba(34, 197, 94, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .broken-button {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.1);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .testing-button {
+            border-color: rgba(245, 158, 11, 0.5);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .testing-button:hover {
+            border-color: rgba(245, 158, 11, 0.8);
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .button-status {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.8em;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-working { background: #10b981; }
+        .status-broken { background: #ef4444; }
+        .status-testing { background: #f59e0b; }
+
+        .command-code {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8em;
+            margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .quick-test {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔧 AI Hub - Working Dashboard</h1>
+            <p>Clear status of what works vs what needs fixing</p>
+        </div>
+
+        <!-- Status Banner -->
+        <div class="status-banner">
+            <strong>✅ TESTED & WORKING:</strong> Commands marked in green are verified working<br>
+            <strong>❌ BROKEN/MISSING:</strong> Commands marked in red need fixes<br>
+            <strong>⚠️ NEEDS TESTING:</strong> Commands marked in yellow need verification
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>📋 How to Use This Dashboard:</h3>
+            <p><strong>Green buttons:</strong> Click directly - they open working interfaces</p>
+            <p><strong>Yellow buttons:</strong> Copy the command and run in terminal to test</p>
+            <p><strong>Red buttons:</strong> Don't work yet - need fixing</p>
+        </div>
+
+        <!-- Working Systems -->
+        <div class="working-section">
+            <div class="section-title">
+                ✅ <span>CONFIRMED WORKING</span>
+            </div>
+            <div class="button-grid">
+                <button class="action-button working-button" onclick="openAOCDashboard()">
+                    <div class="button-status status-working">✅</div>
+                    AOC Main Dashboard
+                    <div class="command-code">hub (or hub-main)</div>
+                </button>
+
+                <button class="action-button working-button" onclick="openModeSelector()">
+                    <div class="button-status status-working">✅</div>
+                    Mode Selector
+                    <div class="command-code">hub modes</div>
+                </button>
+
+                <button class="action-button working-button" onclick="openLiveStatus()">
+                    <div class="button-status status-working">✅</div>
+                    Live Status Tracker
+                    <div class="command-code">hub status</div>
+                </button>
+
+                <button class="action-button working-button" onclick="openFileRecognition()">
+                    <div class="button-status status-working">✅</div>
+                    File Recognition
+                    <div class="command-code">hub files</div>
+                </button>
+
+                <button class="action-button working-button" onclick="showCommand('hub check')">
+                    <div class="button-status status-working">✅</div>
+                    System Status Check
+                    <div class="command-code">hub check</div>
+                </button>
+
+                <button class="action-button working-button" onclick="showCommand('aisync')">
+                    <div class="button-status status-working">✅</div>
+                    Multi-Computer Sync
+                    <div class="command-code">aisync</div>
+                </button>
+
+                <button class="action-button working-button" onclick="openCortexCenter()">
+                    <div class="button-status status-working">✅</div>
+                    Book Control Center
+                    <div class="command-code">Cortex Production System</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Needs Testing -->
+        <div class="testing-section">
+            <div class="section-title">
+                ⚠️ <span>NEEDS TESTING</span>
+            </div>
+            <div class="button-grid">
+                <button class="action-button testing-button" onclick="showCommand('sm open')">
+                    <div class="button-status status-testing">⚠️</div>
+                    SM Open VS Code
+                    <div class="command-code">sm open</div>
+                </button>
+
+                <button class="action-button testing-button" onclick="showCommand('sm sync')">
+                    <div class="button-status status-testing">⚠️</div>
+                    SM iCloud Sync
+                    <div class="command-code">sm sync</div>
+                </button>
+
+                <button class="action-button testing-button" onclick="showCommand('sm status')">
+                    <div class="button-status status-testing">⚠️</div>
+                    SM System Status
+                    <div class="command-code">sm status</div>
+                </button>
+
+                <button class="action-button testing-button" onclick="showCommand('gabo-tech')">
+                    <div class="button-status status-testing">⚠️</div>
+                    Switch to Technical Mode
+                    <div class="command-code">gabo-tech</div>
+                </button>
+
+                <button class="action-button testing-button" onclick="showCommand('gabo-rebel')">
+                    <div class="button-status status-testing">⚠️</div>
+                    Switch to Rebel Mode
+                    <div class="command-code">gabo-rebel</div>
+                </button>
+
+                <button class="action-button testing-button" onclick="showCommand('make dashboard')">
+                    <div class="button-status status-testing">⚠️</div>
+                    Make Dashboard
+                    <div class="command-code">make dashboard</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Broken/Missing -->
+        <div class="broken-section">
+            <div class="section-title">
+                ❌ <span>BROKEN/MISSING</span>
+            </div>
+            <div class="button-grid">
+                <button class="action-button broken-button">
+                    <div class="button-status status-broken">❌</div>
+                    Documentation Links
+                    <div class="command-code">Missing: docs/ structure</div>
+                </button>
+
+                <button class="action-button broken-button">
+                    <div class="button-status status-broken">❌</div>
+                    Scripts Directory
+                    <div class="command-code">Missing: scripts/ folder</div>
+                </button>
+
+                <button class="action-button broken-button">
+                    <div class="button-status status-broken">❌</div>
+                    Continue with AI
+                    <div class="command-code">Missing: ./scripts/continue-with-ai.sh</div>
+                </button>
+
+                <button class="action-button broken-button">
+                    <div class="button-status status-broken">❌</div>
+                    VS Code Tasks
+                    <div class="command-code">Missing: .vscode/tasks.json</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Test Section -->
+        <div class="quick-test">
+            <h3>🧪 Quick Test Commands</h3>
+            <p>Copy and paste these in terminal to test:</p>
+            <div style="display: grid; gap: 10px; margin-top: 15px;">
+                <div class="command-code">hub check</div>
+                <div class="command-code">hub</div>
+                <div class="command-code">hub modes</div>
+                <div class="command-code">aisync</div>
+                <div class="command-code">sm status</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Working dashboard functions
+        function openAOCDashboard() {
+            window.open('../AOC_FRONTEND/AI_HUB_FRONTEND_DASHBOARD.html', '_blank');
+        }
+
+        function openModeSelector() {
+            window.open('../AOC_FRONTEND/AI_HUB_MODE_SELECTOR.html', '_blank');
+        }
+
+        function openLiveStatus() {
+            window.open('../AOC_FRONTEND/REAL_TIME_STATUS_TRACKER.html', '_blank');
+        }
+
+        function openFileRecognition() {
+            window.open('../AOC_FRONTEND/AI_HUB_FILE_RECOGNITION_SYSTEM.html', '_blank');
+        }
+
+        function openCortexCenter() {
+            window.open('cortex-control-center.html', '_blank');
+        }
+
+        function showCommand(cmd) {
+            const message = `Copy this command and run in terminal:\n\n${cmd}\n\nThis will execute the command and show you if it works.`;
+            alert(message);
+
+            // Also copy to clipboard if possible
+            navigator.clipboard.writeText(cmd).then(() => {
+                console.log('Command copied to clipboard');
+            }).catch(() => {
+                console.log('Could not copy to clipboard');
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Working Dashboard initialized');
+        });
+    </script>
+</body>
+</html>

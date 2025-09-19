@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Organization Mode Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 25px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #4ade80, #3b82f6, #8b5cf6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 4s ease-in-out infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+        }
+
+        .mode-categories {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .category-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .category-title {
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .mode-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .mode-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .mode-card.active {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+        }
+
+        .mode-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .mode-icon {
+            font-size: 2.5em;
+        }
+
+        .mode-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .mode-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .mode-description {
+            font-size: 0.95em;
+            opacity: 0.8;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .mode-applications {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .application-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin: 2px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Mode-specific styling */
+        .technical-mode {
+            border-left: 4px solid #374151;
+        }
+
+        .technical-mode:hover {
+            border-color: #6b7280;
+            background: rgba(55, 65, 81, 0.15);
+        }
+
+        .teacher-mode {
+            border-left: 4px solid #059669;
+        }
+
+        .teacher-mode:hover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .integration-mode {
+            border-left: 4px solid #7c3aed;
+        }
+
+        .integration-mode:hover {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        .raw-mode {
+            border-left: 4px solid #dc2626;
+        }
+
+        .raw-mode:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .philosopher-mode {
+            border-left: 4px solid #7c2d12;
+        }
+
+        .philosopher-mode:hover {
+            border-color: #ea580c;
+            background: rgba(234, 88, 12, 0.15);
+        }
+
+        .companion-mode {
+            border-left: 4px solid #1e40af;
+        }
+
+        .companion-mode:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Active Mode Display */
+        .active-mode-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            border-radius: 15px;
+            padding: 15px 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid #4ade80;
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .active-mode-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .active-mode-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .action-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mode-categories {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+
+            .active-mode-display {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Animation for mode selection */
+        @keyframes mode-select {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .mode-selected {
+            animation: mode-select 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎛️ AI Hub Mode Selector</h1>
+            <p>Choose your organizational mode for optimized workflow and communication</p>
+        </div>
+
+        <!-- Active Mode Display -->
+        <div class="active-mode-display" id="activeModeDisplay">
+            <div class="active-mode-title">Current Mode:</div>
+            <div id="currentMode">
+                <span class="active-mode-icon">🔧</span>
+                <span>Technical Mode</span>
+            </div>
+        </div>
+
+        <!-- Mode Categories -->
+        <div class="mode-categories">
+            <!-- File/Project Organization -->
+            <div class="category-section">
+                <div class="category-title">📁 File/Project Organization</div>
+                <div class="mode-grid">
+                    <div class="mode-card technical-mode active" onclick="selectMode('technical', '🔧', 'Technical Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">🔧</div>
+                            <div class="mode-badge">ACTIVE</div>
+                        </div>
+                        <div class="mode-title">/TechnicalMode</div>
+                        <div class="mode-description">
+                            For frameworks and system explanations. Structures complex technical content with clear hierarchies and documentation.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">System Architecture</span>
+                            <span class="application-tag">Framework Documentation</span>
+                            <span class="application-tag">Technical Specs</span>
+                            <span class="application-tag">Code Organization</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card teacher-mode" onclick="selectMode('teacher', '👨‍🏫', 'Teacher Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">👨‍🏫</div>
+                            <div class="mode-badge">READY</div>
+                        </div>
+                        <div class="mode-title">/TeacherMode</div>
+                        <div class="mode-description">
+                            Process instructions based on proven methods. Creates step-by-step guides and educational content.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">Tutorial Creation</span>
+                            <span class="application-tag">Process Documentation</span>
+                            <span class="application-tag">Training Materials</span>
+                            <span class="application-tag">Best Practices</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card integration-mode" onclick="selectMode('integration', '🔗', 'Integration Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">🔗</div>
+                            <div class="mode-badge">READY</div>
+                        </div>
+                        <div class="mode-title">/IntegrationMode</div>
+                        <div class="mode-description">
+                            For complex project architectures. Connects multiple systems and creates unified workflows.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">Project Architecture</span>
+                            <span class="application-tag">System Integration</span>
+                            <span class="application-tag">Workflow Design</span>
+                            <span class="application-tag">Cross-Platform</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Communication/Content Organization -->
+            <div class="category-section">
+                <div class="category-title">💬 Communication/Content</div>
+                <div class="mode-grid">
+                    <div class="mode-card raw-mode" onclick="selectMode('raw', '⚡', 'Raw Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">⚡</div>
+                            <div class="mode-badge">READY</div>
+                        </div>
+                        <div class="mode-title">/RawMode</div>
+                        <div class="mode-description">
+                            For immediate, authentic expression. Captures thoughts and ideas in their purest form without heavy processing.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">Voice Captures</span>
+                            <span class="application-tag">Stream of Consciousness</span>
+                            <span class="application-tag">Quick Ideas</span>
+                            <span class="application-tag">Authentic Voice</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card philosopher-mode" onclick="selectMode('philosopher', '🧭', 'Philosopher Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">🧭</div>
+                            <div class="mode-badge">READY</div>
+                        </div>
+                        <div class="mode-title">/PhilosopherMode</div>
+                        <div class="mode-description">
+                            Connects individual tasks to larger patterns. Reveals universal principles and deeper meanings.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">Pattern Recognition</span>
+                            <span class="application-tag">Universal Principles</span>
+                            <span class="application-tag">Deep Insights</span>
+                            <span class="application-tag">Wisdom Synthesis</span>
+                        </div>
+                    </div>
+
+                    <div class="mode-card companion-mode" onclick="selectMode('companion', '🤝', 'Companion Mode')">
+                        <div class="mode-header">
+                            <div class="mode-icon">🤝</div>
+                            <div class="mode-badge">READY</div>
+                        </div>
+                        <div class="mode-title">/CompanionMode</div>
+                        <div class="mode-description">
+                            For collaborative planning sessions. Facilitates partnership thinking and shared decision-making.
+                        </div>
+                        <div class="mode-applications">
+                            <span class="application-tag">Collaborative Planning</span>
+                            <span class="application-tag">Partnership Thinking</span>
+                            <span class="application-tag">Shared Decisions</span>
+                            <span class="application-tag">Team Alignment</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 style="text-align: center; margin-bottom: 20px;">⚡ Quick Mode Actions</h2>
+            <div class="action-grid">
+                <button class="action-button" onclick="quickAction('organize')">
+                    🗂️ Auto-Organize Files
+                </button>
+                <button class="action-button" onclick="quickAction('capture')">
+                    🎤 Voice Capture Session
+                </button>
+                <button class="action-button" onclick="quickAction('plan')">
+                    📋 Planning Session
+                </button>
+                <button class="action-button" onclick="quickAction('integrate')">
+                    🔗 System Integration
+                </button>
+                <button class="action-button" onclick="quickAction('teach')">
+                    👨‍🏫 Create Tutorial
+                </button>
+                <button class="action-button" onclick="quickAction('philosophize')">
+                    🧭 Pattern Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentActiveMode = 'technical';
+
+        function selectMode(mode, icon, title) {
+            // Remove active class from all cards
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.classList.remove('active');
+                const badge = card.querySelector('.mode-badge');
+                if (badge.textContent === 'ACTIVE') {
+                    badge.textContent = 'READY';
+                }
+            });
+
+            // Add active class to selected card
+            event.currentTarget.classList.add('active', 'mode-selected');
+            const badge = event.currentTarget.querySelector('.mode-badge');
+            badge.textContent = 'ACTIVE';
+
+            // Update active mode display
+            document.getElementById('currentMode').innerHTML = `
+                <span class="active-mode-icon">${icon}</span>
+                <span>${title}</span>
+            `;
+
+            currentActiveMode = mode;
+
+            // Mode-specific actions
+            const modeActions = {
+                'technical': () => {
+                    console.log('Activating Technical Mode: Framework organization and system documentation');
+                    showModeMessage('🔧 Technical Mode Active', 'Ready for framework organization and system documentation');
+                },
+                'teacher': () => {
+                    console.log('Activating Teacher Mode: Process instruction and educational content');
+                    showModeMessage('👨‍🏫 Teacher Mode Active', 'Ready for step-by-step instruction creation');
+                },
+                'integration': () => {
+                    console.log('Activating Integration Mode: Complex project architecture');
+                    showModeMessage('🔗 Integration Mode Active', 'Ready for system integration and workflow design');
+                },
+                'raw': () => {
+                    console.log('Activating Raw Mode: Immediate authentic expression');
+                    showModeMessage('⚡ Raw Mode Active', 'Ready for authentic voice capture and immediate expression');
+                },
+                'philosopher': () => {
+                    console.log('Activating Philosopher Mode: Pattern recognition and universal principles');
+                    showModeMessage('🧭 Philosopher Mode Active', 'Ready for pattern analysis and universal insights');
+                },
+                'companion': () => {
+                    console.log('Activating Companion Mode: Collaborative planning');
+                    showModeMessage('🤝 Companion Mode Active', 'Ready for collaborative planning and partnership thinking');
+                }
+            };
+
+            if (modeActions[mode]) {
+                modeActions[mode]();
+            }
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                event.currentTarget.classList.remove('mode-selected');
+            }, 600);
+        }
+
+        function quickAction(action) {
+            const actions = {
+                'organize': () => executeMode('technical', 'Auto-organizing files using Technical Mode framework'),
+                'capture': () => executeMode('raw', 'Starting voice capture session in Raw Mode'),
+                'plan': () => executeMode('companion', 'Initiating collaborative planning session'),
+                'integrate': () => executeMode('integration', 'Starting system integration process'),
+                'teach': () => executeMode('teacher', 'Creating tutorial in Teacher Mode'),
+                'philosophize': () => executeMode('philosopher', 'Analyzing patterns in Philosopher Mode')
+            };
+
+            if (actions[action]) {
+                actions[action]();
+            }
+        }
+
+        function executeMode(mode, message) {
+            console.log(`Executing ${mode} mode: ${message}`);
+            showModeMessage(`Executing ${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`, message);
+        }
+
+        function showModeMessage(title, message) {
+            // Create temporary notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0,0,0,0.95);
+                border: 2px solid #4ade80;
+                border-radius: 15px;
+                padding: 30px;
+                color: white;
+                text-align: center;
+                z-index: 10000;
+                backdrop-filter: blur(10px);
+                max-width: 400px;
+            `;
+
+            notification.innerHTML = `
+                <h3 style="margin-bottom: 10px; font-size: 1.3em;">${title}</h3>
+                <p style="opacity: 0.8;">${message}</p>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Remove notification after 2 seconds
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI Hub Mode Selector initialized');
+
+            // Add hover effects
+            const modeCards = document.querySelectorAll('.mode-card');
+            modeCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(-3px) scale(1.01)';
+                    }
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.transform = 'translateY(0) scale(1)';
+                    }
+                });
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1': selectMode('technical', '🔧', 'Technical Mode'); e.preventDefault(); break;
+                    case '2': selectMode('teacher', '👨‍🏫', 'Teacher Mode'); e.preventDefault(); break;
+                    case '3': selectMode('integration', '🔗', 'Integration Mode'); e.preventDefault(); break;
+                    case '4': selectMode('raw', '⚡', 'Raw Mode'); e.preventDefault(); break;
+                    case '5': selectMode('philosopher', '🧭', 'Philosopher Mode'); e.preventDefault(); break;
+                    case '6': selectMode('companion', '🤝', 'Companion Mode'); e.preventDefault(); break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

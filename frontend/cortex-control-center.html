@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Calisthenics - Control Center</title>
+    <link rel="stylesheet" href="cortex-style.css">
+</head>
+<body>
+    <div class="control-center">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>The Art of Calisthenics - Control Center</h1>
+                <div class="header-stats">
+                    <div class="stat">
+                        <span class="stat-label">Progress</span>
+                        <span class="stat-value" id="overall-progress">0%</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Chapters</span>
+                        <span class="stat-value" id="chapters-complete">0/9</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Words</span>
+                        <span class="stat-value" id="total-words">0/29,300</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <main class="dashboard-grid">
+            <!-- Book Structure Navigator -->
+            <section class="dashboard-section book-navigator">
+                <h2>Book Structure Navigator</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="book-parts" id="book-parts">
+                    <!-- Dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Recursive Panel -->
+            <section class="dashboard-section recursive-panel">
+                <h2>Recursive Chapter Generation</h2>
+                <div class="recursive-controls">
+                    <div class="prompt-category">
+                        <select class="form-control" id="prompt-category">
+                            <option value="chapter">Chapter Generation</option>
+                            <option value="enhancement">Content Enhancement</option>
+                        </select>
+                    </div>
+                    <textarea 
+                        class="form-control" 
+                        id="prompt-input" 
+                        rows="6" 
+                        placeholder="Enter your generation prompt here...">Generate a comprehensive chapter on [TOPIC] for The Art of Calisthenics, integrating ecosystem philosophy with practical applications...</textarea>
+                    <div class="controls-row">
+                        <button class="btn btn--primary" id="generate-btn">Generate</button>
+                        <button class="btn btn--secondary" id="batch-process-btn">Batch Process</button>
+                        <button class="btn btn--outline" id="stream-output-btn">Stream Output</button>
+                        <button class="btn btn--outline" id="clear-btn">Clear</button>
+                        <div class="token-display">
+                            <span id="token-count">400/8000 tokens</span>
+                            <span class="status status--info" id="batching-status">Batching Enabled</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="recursive-output" id="recursive-output">
+                    <pre id="output-content">Ready for chapter generation...</pre>
+                </div>
+                <div class="generation-progress hidden" id="generation-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="generation-fill"></div>
+                    </div>
+                    <span id="progress-text">Processing...</span>
+                </div>
+            </section>
+
+            <!-- Asset Management -->
+            <section class="dashboard-section asset-management">
+                <h2>Asset Management</h2>
+                <div class="asset-browser">
+                    <div class="asset-categories">
+                        <button class="asset-tab active" data-category="all">All Assets</button>
+                        <button class="asset-tab" data-category="pdfs">PDFs</button>
+                        <button class="asset-tab" data-category="prompts">Prompt Vault</button>
+                    </div>
+                    <div class="asset-grid" id="asset-grid">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+                <div class="drag-drop-zone" id="drag-drop-zone">
+                    <div class="drag-drop-content">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <p>Drag & drop assets here or click to upload</p>
+                        <input type="file" id="file-input" multiple accept=".pdf,.txt,.md">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Backend Controls -->
+            <section class="dashboard-section backend-controls">
+                <h2>Backend Controls</h2>
+                <div class="control-tabs">
+                    <button class="control-tab active" data-tab="api">API Controls</button>
+                    <button class="control-tab" data-tab="export">Export</button>
+                    <button class="control-tab" data-tab="settings">Settings</button>
+                </div>
+                
+                <div class="control-content" id="api-controls">
+                    <div class="form-group">
+                        <label class="form-label">API Endpoint</label>
+                        <select class="form-control" id="api-endpoint">
+                            <option value="/api/openai">/api/openai</option>
+                            <option value="/api/claude">/api/claude</option>
+                            <option value="/api/batch">/api/batch</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Query Interface</label>
+                        <textarea class="form-control" id="api-query" rows="3" placeholder="Enter API query..."></textarea>
+                    </div>
+                    <button class="btn btn--primary" id="test-api-btn">Test API</button>
+                    <div class="api-response" id="api-response"></div>
+                </div>
+
+                <div class="control-content hidden" id="export-controls">
+                    <div class="export-options">
+                        <button class="btn btn--outline export-btn" data-format="word">Word Document</button>
+                        <button class="btn btn--outline export-btn" data-format="pdf">PDF Manuscript</button>
+                        <button class="btn btn--outline export-btn" data-format="html">HTML Preview</button>
+                        <button class="btn btn--primary export-btn" data-format="victory">Victory Belt Package</button>
+                    </div>
+                    <div class="export-status" id="export-status"></div>
+                </div>
+
+                <div class="control-content hidden" id="settings-controls">
+                    <div class="settings-group">
+                        <h3>Formatting Standards</h3>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="victory-belt-format" checked>
+                            Victory Belt Standards
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="academic-style" checked>
+                            Academic Style
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="visual-elements" checked>
+                            Visual Elements
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <h3>Generation Settings</h3>
+                        <label class="form-label">Token Limit</label>
+                        <input type="range" class="form-control" id="token-limit" min="400" max="8000" value="400">
+                        <span id="token-limit-display">400</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-items">
+                <span class="status-item">
+                    <span class="status status--success">Connected</span>
+                    API Status
+                </span>
+                <span class="status-item">
+                    <span class="status status--info">Active</span>
+                    Session
+                </span>
+                <span class="status-item" id="last-action">
+                    Last Action: Initialized
+                </span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="cortex-app.js"></script>
+</body>
+</html>
