@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Book Backend - The Art of Calisthenics</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Main Header -->
+        <header class="main-header">
+            <div class="header-left">
+                <h1 class="app-title">
+                    <span class="logo">📚</span>
+                    Ultimate Book Backend
+                </h1>
+                <div class="book-title">The Art of Calisthenics</div>
+            </div>
+            <div class="header-center">
+                <div class="progress-indicator">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 19%"></div>
+                    </div>
+                    <span class="progress-text">19% Complete • 12,500 / 65,000 words</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="collaborators">
+                    <div class="avatar active" title="Gabo Saturno">GS</div>
+                    <div class="avatar invited" title="Victory Belt Editor">VB</div>
+                </div>
+                <button class="btn btn--primary export-btn">Export Hub</button>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="main-nav">
+            <button class="nav-item active" data-view="dashboard">
+                <span class="nav-icon">🏠</span>
+                Dashboard
+            </button>
+            <button class="nav-item" data-view="mindmap">
+                <span class="nav-icon">🧠</span>
+                Mind Map
+            </button>
+            <button class="nav-item" data-view="chapters">
+                <span class="nav-icon">📁</span>
+                Chapter Folders
+            </button>
+            <button class="nav-item" data-view="timeline">
+                <span class="nav-icon">📅</span>
+                Timeline
+            </button>
+            <button class="nav-item" data-view="protocols">
+                <span class="nav-icon">⚙️</span>
+                MSOP Protocols
+            </button>
+            <button class="nav-item" data-view="analytics">
+                <span class="nav-icon">📊</span>
+                Analytics
+            </button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div class="view-container active" id="dashboard-view">
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn--secondary">New Chapter</button>
+                            <button class="btn btn--secondary">Run MSOP Audit</button>
+                            <button class="btn btn--secondary">AI Assistant</button>
+                            <button class="btn btn--secondary">Upload Asset</button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">✏️</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Chapter 1: Movement as Language</div>
+                                    <div class="activity-meta">Updated 2 hours ago • 2,800 words</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">📝</div>
+                                <div class="activity-content">
+                                    <div class="activity-title">Chapter 2: The Seven Disciplines</div>
+                                    <div class="activity-meta">Outlined yesterday • 800 words</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <h3>Victory Belt Readiness</h3>
+                        <div class="readiness-meter">
+                            <div class="meter-circle">
+                                <div class="meter-fill" style="--percentage: 19"></div>
+                                <div class="meter-text">19%</div>
+                            </div>
+                            <div class="readiness-items">
+                                <div class="readiness-item completed">
+                                    <span class="checkmark">✓</span>
+                                    Initial structure defined
+                                </div>
+                                <div class="readiness-item in-progress">
+                                    <span class="checkmark">○</span>
+                                    First draft chapters
+                                </div>
+                                <div class="readiness-item pending">
+                                    <span class="checkmark">○</span>
+                                    Asset integration
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card wide">
+                        <h3>Book Structure Overview</h3>
+                        <div class="structure-visual">
+                            <div class="part-card" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">
+                                <h4>Part I: Foundation of Awareness</h4>
+                                <div class="chapter-pills">
+                                    <span class="pill draft">Ch 1: Movement as Language</span>
+                                    <span class="pill outline">Ch 2: The Seven Disciplines</span>
+                                </div>
+                            </div>
+                            <div class="part-card" style="background: linear-gradient(135deg, #4ECDC4, #6ED5D1);">
+                                <h4>Part II: Systematic Approach</h4>
+                                <div class="chapter-pills">
+                                    <span class="pill research">Ch 3: Progressive Overload</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mind Map View -->
+            <div class="view-container" id="mindmap-view">
+                <div class="mindmap-toolbar">
+                    <button class="btn btn--secondary">Add Node</button>
+                    <button class="btn btn--secondary">Auto-Layout</button>
+                    <button class="btn btn--secondary">Export Map</button>
+                </div>
+                <div class="mindmap-canvas">
+                    <div class="mindmap-node root" style="left: 50%; top: 20%;">
+                        <div class="node-content">Art of Calisthenics</div>
+                    </div>
+                    <div class="mindmap-node part" style="left: 25%; top: 45%; background: #FF6B6B;">
+                        <div class="node-content">Foundation of Awareness</div>
+                    </div>
+                    <div class="mindmap-node part" style="left: 75%; top: 45%; background: #4ECDC4;">
+                        <div class="node-content">Systematic Approach</div>
+                    </div>
+                    <div class="mindmap-node chapter" style="left: 15%; top: 70%;">
+                        <div class="node-content">Movement as Language</div>
+                    </div>
+                    <div class="mindmap-node chapter" style="left: 35%; top: 70%;">
+                        <div class="node-content">Seven Disciplines</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapters View -->
+            <div class="view-container" id="chapters-view">
+                <div class="chapters-toolbar">
+                    <button class="btn btn--primary">New Chapter</button>
+                    <button class="btn btn--secondary">Bulk Operations</button>
+                    <div class="view-toggle">
+                        <button class="toggle-btn active">Folder View</button>
+                        <button class="toggle-btn">List View</button>
+                    </div>
+                </div>
+                <div class="chapters-container">
+                    <div class="chapter-folder" data-part="1">
+                        <div class="folder-header" style="background: #FF6B6B;">
+                            <span class="folder-icon">📁</span>
+                            <h3>Part I: Foundation of Awareness</h3>
+                            <span class="chapter-count">2 chapters</span>
+                        </div>
+                        <div class="folder-content">
+                            <div class="chapter-item draggable" data-id="1">
+                                <div class="chapter-status draft"></div>
+                                <div class="chapter-info">
+                                    <h4>Chapter 1: Movement as Language</h4>
+                                    <div class="chapter-meta">2,800 / 3,000 words • Last edited 2h ago</div>
+                                </div>
+                                <div class="chapter-actions">
+                                    <button class="btn btn--sm">Edit</button>
+                                    <button class="btn btn--sm">AI Enhance</button>
+                                </div>
+                            </div>
+                            <div class="chapter-item draggable" data-id="2">
+                                <div class="chapter-status outline"></div>
+                                <div class="chapter-info">
+                                    <h4>Chapter 2: The Seven Disciplines</h4>
+                                    <div class="chapter-meta">800 / 3,500 words • Last edited 1d ago</div>
+                                </div>
+                                <div class="chapter-actions">
+                                    <button class="btn btn--sm">Continue</button>
+                                    <button class="btn btn--sm">AI Expand</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chapter-folder" data-part="2">
+                        <div class="folder-header" style="background: #4ECDC4;">
+                            <span class="folder-icon">📁</span>
+                            <h3>Part II: Systematic Approach</h3>
+                            <span class="chapter-count">1 chapter</span>
+                        </div>
+                        <div class="folder-content">
+                            <div class="chapter-item draggable" data-id="3">
+                                <div class="chapter-status research"></div>
+                                <div class="chapter-info">
+                                    <h4>Chapter 3: Progressive Overload Principles</h4>
+                                    <div class="chapter-meta">0 / 3,200 words • Not started</div>
+                                </div>
+                                <div class="chapter-actions">
+                                    <button class="btn btn--sm">Start</button>
+                                    <button class="btn btn--sm">AI Research</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="view-container" id="timeline-view">
+                <div class="timeline-toolbar">
+                    <button class="btn btn--secondary">Add Milestone</button>
+                    <button class="btn btn--secondary">Victory Belt Deadline</button>
+                </div>
+                <div class="timeline-container">
+                    <div class="timeline-item completed">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h4>Project Kickoff</h4>
+                            <p>Initial structure and concept development</p>
+                            <div class="timeline-date">Sep 1, 2025</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item current">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h4>First Draft Chapters</h4>
+                            <p>Completing foundational chapters with core concepts</p>
+                            <div class="timeline-date">Sep 10, 2025 (Today)</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item upcoming">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h4>MSOP Protocol Completion</h4>
+                            <p>Full content audit and thematic clustering</p>
+                            <div class="timeline-date">Sep 15, 2025</div>
+                        </div>
+                    </div>
+                    <div class="timeline-item upcoming">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <h4>Victory Belt Submission</h4>
+                            <p>Final manuscript ready for publisher review</p>
+                            <div class="timeline-date">Oct 30, 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MSOP Protocols View -->
+            <div class="view-container" id="protocols-view">
+                <div class="protocols-header">
+                    <h2>MSOP Protocol Suite</h2>
+                    <p>Master System for Optimized Publishing - Complete content analysis and optimization</p>
+                </div>
+                <div class="protocols-grid">
+                    <div class="protocol-card ready">
+                        <div class="protocol-header">
+                            <h3>Master Content Audit</h3>
+                            <div class="protocol-status ready">Ready</div>
+                        </div>
+                        <p>Comprehensive inventory of all content, identifying gaps and redundancies</p>
+                        <div class="protocol-actions">
+                            <button class="btn btn--primary run-protocol" data-protocol="audit">Run Audit</button>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card pending">
+                        <div class="protocol-header">
+                            <h3>Thematic Clustering</h3>
+                            <div class="protocol-status pending">Pending Audit</div>
+                        </div>
+                        <p>Group content into 8-12 major themes for optimal reader flow</p>
+                        <div class="protocol-actions">
+                            <button class="btn btn--secondary" disabled>Requires Audit</button>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card pending">
+                        <div class="protocol-header">
+                            <h3>Hierarchical Mapping</h3>
+                            <div class="protocol-status pending">Pending</div>
+                        </div>
+                        <p>Create detailed table of contents with logical progression</p>
+                        <div class="protocol-actions">
+                            <button class="btn btn--secondary" disabled>Requires Clustering</button>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card pending">
+                        <div class="protocol-header">
+                            <h3>Skill Progression Matrix</h3>
+                            <div class="protocol-status pending">Pending</div>
+                        </div>
+                        <p>Map exercise progressions and skill dependencies</p>
+                        <div class="protocol-actions">
+                            <button class="btn btn--secondary" disabled>Requires Mapping</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div class="view-container" id="analytics-view">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Writing Progress</h3>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="progressChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>Chapter Completion</h3>
+                        <div class="completion-bars">
+                            <div class="completion-item">
+                                <span class="chapter-label">Chapter 1</span>
+                                <div class="completion-bar">
+                                    <div class="completion-fill" style="width: 93%"></div>
+                                </div>
+                                <span class="completion-percent">93%</span>
+                            </div>
+                            <div class="completion-item">
+                                <span class="chapter-label">Chapter 2</span>
+                                <div class="completion-bar">
+                                    <div class="completion-fill" style="width: 23%"></div>
+                                </div>
+                                <span class="completion-percent">23%</span>
+                            </div>
+                            <div class="completion-item">
+                                <span class="chapter-label">Chapter 3</span>
+                                <div class="completion-bar">
+                                    <div class="completion-fill" style="width: 0%"></div>
+                                </div>
+                                <span class="completion-percent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Daily Word Count</h3>
+                        <div class="chart-container" style="position: relative; height: 250px;">
+                            <canvas id="wordCountChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h3>Asset Status</h3>
+                        <div class="asset-overview">
+                            <div class="asset-stat">
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">Uploaded</div>
+                            </div>
+                            <div class="asset-stat">
+                                <div class="stat-number">1</div>
+                                <div class="stat-label">Needed</div>
+                            </div>
+                            <div class="asset-stat">
+                                <div class="stat-number">12</div>
+                                <div class="stat-label">Planned</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- AI Assistant Panel -->
+        <div class="ai-panel hidden">
+            <div class="ai-header">
+                <h3>AI Content Assistant</h3>
+                <button class="close-panel">&times;</button>
+            </div>
+            <div class="prompt-categories">
+                <button class="category-tab active" data-category="research">Research</button>
+                <button class="category-tab" data-category="structure">Structure</button>
+                <button class="category-tab" data-category="tone">Tone</button>
+            </div>
+            <div class="prompt-content">
+                <div class="prompt-list" data-category="research">
+                    <div class="prompt-item">Generate comprehensive research on [TOPIC] for The Art of Calisthenics...</div>
+                    <div class="prompt-item">Create detailed exercise progressions for [SKILL] with scientific backing...</div>
+                    <div class="prompt-item">Develop philosophical framework connecting [CONCEPT] to movement practice...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Modal -->
+        <div class="modal hidden" id="export-modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Export Hub</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="export-options">
+                        <div class="export-option">
+                            <div class="export-icon">📄</div>
+                            <div class="export-info">
+                                <h4>Word Document</h4>
+                                <p>Complete manuscript for Victory Belt submission</p>
+                            </div>
+                            <button class="btn btn--primary">Export</button>
+                        </div>
+                        <div class="export-option">
+                            <div class="export-icon">📱</div>
+                            <div class="export-info">
+                                <h4>PDF Preview</h4>
+                                <p>Formatted preview with layout and design</p>
+                            </div>
+                            <button class="btn btn--primary">Export</button>
+                        </div>
+                        <div class="export-option">
+                            <div class="export-icon">🌐</div>
+                            <div class="export-info">
+                                <h4>HTML Version</h4>
+                                <p>Interactive web version for review</p>
+                            </div>
+                            <button class="btn btn--primary">Export</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Protocol Results Modal -->
+        <div class="modal hidden" id="protocol-modal">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>MSOP Protocol Results</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="protocol-results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
