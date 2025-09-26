@@ -5,10 +5,14 @@
 
 ## 🚨 MAJOR CHANGES COMPLETED
 
-### ✅ NEW FRONTEND ADDED
+### ✅ NEW FRONTENDS ADDED
 - **Saturno Movement Studio** - Complete workout builder interface
 - **URL**: https://gabosaturno11.github.io/AI-Hub/frontend/saturno-movement-studio.html
 - **Features**: Drag & drop, AI generation, Kortex modes, responsive design
+
+- **AI Hub Functional Interface** - Easy API integration system
+- **URL**: https://gabosaturno11.github.io/AI-Hub/frontend/ai-hub-functional.html
+- **Features**: OpenAI, Claude, Gemini integration, key management, request history
 
 ### ✅ SYNC SYSTEM CREATED
 - **Claude Connect Script**: `./scripts/claude-connect.sh`
@@ -70,6 +74,7 @@
 - **Mode Selector**: https://gabosaturno11.github.io/AI-Hub/AOC_FRONTEND/AI_HUB_MODE_SELECTOR.html
 - **Cortex Control Center**: https://gabosaturno11.github.io/AI-Hub/frontend/cortex-control-center.html
 - **Saturno Movement Studio**: https://gabosaturno11.github.io/AI-Hub/frontend/saturno-movement-studio.html
+- **AI Hub Functional Interface**: https://gabosaturno11.github.io/AI-Hub/frontend/ai-hub-functional.html
 
 ## 📋 FOR CLAUDE DESKTOP
 When starting new session, paste:
