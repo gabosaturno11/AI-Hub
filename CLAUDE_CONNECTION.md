@@ -22,6 +22,7 @@ cd /Users/Gabosaturno/Projects/AI-Hub
 - **Working Dashboard**: https://gabosaturno11.github.io/AI-Hub/frontend/working-dashboard.html
 - **AOC Dashboard**: https://gabosaturno11.github.io/AI-Hub/AOC_FRONTEND/AI_HUB_FRONTEND_DASHBOARD.html
 - **Mode Selector**: https://gabosaturno11.github.io/AI-Hub/AOC_FRONTEND/AI_HUB_MODE_SELECTOR.html
+- **Saturno Movement Studio**: https://gabosaturno11.github.io/AI-Hub/frontend/saturno-movement-studio.html
 
 ## For Claude Desktop
 
