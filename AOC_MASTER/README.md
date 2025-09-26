@@ -1,67 +1,34 @@
-# AOC_MASTER Reference - STABLE PATH
+# AOC_MASTER Directory
 
-## ⚠️ Path Issue Fixed!
+## ⚠️ Important Note
 
-**Previous Issue**: This directory contained a broken symlink pointing to `/Users/Gabosaturno/Downloads/AOC_MASTER` which caused GitHub Pages build failures.
+This directory is a placeholder for the Art of Calisthenics master content.
 
-**Solution Applied**:
-- ✅ Broken symlink removed
-- ✅ Content moved to stable location: `/Users/Gabosaturno/Workspace/AOC_MASTER/`
-- ✅ GitHub Pages builds will now succeed
+The actual content is stored locally and not synced to GitHub for size and security reasons.
 
-## 🏠 New Stable Location
+## 📁 Directory Structure
 
-The AOC_MASTER content is now permanently located at:
-```
-/Users/Gabosaturno/Workspace/AOC_MASTER/
-```
+When working locally, this directory contains:
+- 01_COMMAND_CENTER
+- 02_KNOWLEDGE_VAULT
+- 03_PRODUCTION_LINE
+- 04_VISUAL_ARSENAL
+- 05_STRATEGIC_ASSETS
+- 06_ARCHIVE
 
-## 🚀 Access Instructions
+## 🔒 Why This Directory is Empty on GitHub
 
-### Using Bash Shortcuts:
-```bash
-# Source the path shortcuts (add to your .zshrc)
-source /Users/Gabosaturno/Workspace/Scripts/path_shortcuts.sh
+1. **Size limitations** - The full content exceeds GitHub's file size limits
+2. **Security** - Contains proprietary content and drafts
+3. **Performance** - Keeps the repository lightweight and fast
 
-# Quick access commands
-aoc          # Navigate to AOC_MASTER
-workspace    # Navigate to main workspace
-proj         # Navigate to Projects folder
-```
+## 💡 For Developers
 
-### Direct Path Access:
-```bash
-# Direct navigation
-cd /Users/Gabosaturno/Workspace/AOC_MASTER
-
-# Open in new terminal
-open -a Terminal /Users/Gabosaturno/Workspace/AOC_MASTER
-```
-
-## 📁 Workspace Structure
-
-```
-/Users/Gabosaturno/Workspace/          # ✅ STABLE - Not iCloud synced
-├── AOC_MASTER/                        # Art of Calisthenics master files
-├── Projects/                          # Current projects
-├── Development/                       # Development work
-├── AI-Hub-Local/                      # Local AI-Hub work
-└── Scripts/                           # Utility scripts & shortcuts
-```
-
-## 💡 Benefits of New Structure
-
-- ✅ **No iCloud sync conflicts**
-- ✅ **Stable paths for development**
-- ✅ **GitHub Actions compatibility**
-- ✅ **Better organization**
-- ✅ **Quick access shortcuts**
-
-## 📖 Full Documentation
-
-Complete path management guide available at:
-`/Users/Gabosaturno/Workspace/Scripts/BASH_SNIPPETS_PATH_MANAGEMENT.md`
+If you need access to the AOC_MASTER content:
+1. Contact the repository owner
+2. Content will be shared via secure file transfer
+3. Store locally in your workspace (not in iCloud-synced folders)
 
 ---
 
-*Fixed on September 26, 2025 - Paths now stable and deployment-ready!* 🚀
+*This directory is excluded from Jekyll processing to prevent build errors.*
