@@ -1,0 +1,23 @@
+{
+  "name": "ai-hub",
+  "version": "1.0.0",
+  "description": "**GABO SATURNO IS NOT A DEVELOPER**   **SAVE HIM TIME WITH FAST SOLUTIONS**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabosaturno11/AI-Hub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabosaturno11/AI-Hub/issues"
+  },
+  "homepage": "https://github.com/gabosaturno11/AI-Hub#readme"
+}

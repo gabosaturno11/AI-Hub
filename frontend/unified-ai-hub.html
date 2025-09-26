@@ -32,6 +32,25 @@
             border-right: 1px solid rgba(255, 255, 255, 0.2);
             padding: 20px;
             overflow-y: auto;
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:hover {
+            background: #cbd5e0;
         }
 
         .sidebar-header {
@@ -133,6 +152,56 @@
             border-radius: 8px;
             padding: 20px;
             margin-bottom: 20px;
+        }
+
+        .writing-hub-toggle {
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .writing-hub-toggle:hover {
+            background: #cbd5e0;
+        }
+
+        .writing-hub-toggle.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .writing-hub-panel {
+            display: none;
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .writing-hub-panel.active {
+            display: block;
+        }
+
+        .writing-hub-panel h3 {
+            color: #e2e8f0;
+            margin-bottom: 15px;
+        }
+
+        .writing-hub-panel .form-control {
+            background: #4a5568;
+            border: 1px solid #718096;
+            color: #e2e8f0;
+        }
+
+        .writing-hub-panel .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .api-section h3 {
@@ -346,6 +415,7 @@
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
+            <button class="back-button" onclick="goBack()">← Back</button>
             <div class="sidebar-header">
                 <h1>🤖 AI-Hub</h1>
                 <p>Unified Control Center</p>
@@ -424,6 +494,35 @@
                         <input type="password" class="form-control" id="gemini-key" placeholder="AI...">
                     </div>
                     <button class="btn btn-primary" onclick="saveKeys()">Save Keys</button>
+                </div>
+
+                <button class="writing-hub-toggle" onclick="toggleWritingHub()">📝 Writing Hub</button>
+                
+                <div class="writing-hub-panel" id="writing-hub-panel">
+                    <h3>📝 Professional Writing Hub</h3>
+                    <div class="form-group">
+                        <label>Writing Mode</label>
+                        <select class="form-control" id="writing-mode">
+                            <option value="chapter">Chapter Writing</option>
+                            <option value="outline">Outline Generation</option>
+                            <option value="research">Research Synthesis</option>
+                            <option value="editing">Content Editing</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Audience</label>
+                        <select class="form-control" id="target-audience">
+                            <option value="beginners">Beginners</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="professionals">Professionals</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Content Input</label>
+                        <textarea class="form-control" id="writing-input" rows="4" placeholder="Enter your content or prompt..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="processWriting()">Process Writing</button>
                 </div>
 
                 <div class="api-section">
@@ -714,6 +813,50 @@
 
         function updateStatus(message) {
             document.getElementById('last-action').textContent = `Last Action: ${message}`;
+        }
+
+        // Back button function
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'https://gabosaturno11.github.io/AI-Hub/';
+            }
+        }
+
+        // Writing hub toggle function
+        function toggleWritingHub() {
+            const panel = document.getElementById('writing-hub-panel');
+            const button = document.querySelector('.writing-hub-toggle');
+            
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+                button.classList.remove('active');
+                button.textContent = '📝 Writing Hub';
+            } else {
+                panel.classList.add('active');
+                button.classList.add('active');
+                button.textContent = '📝 Writing Hub ✓';
+            }
+        }
+
+        // Process writing function
+        function processWriting() {
+            const mode = document.getElementById('writing-mode').value;
+            const audience = document.getElementById('target-audience').value;
+            const input = document.getElementById('writing-input').value;
+            
+            if (!input) {
+                alert('Please enter some content to process');
+                return;
+            }
+
+            updateStatus(`Processing ${mode} for ${audience} audience...`);
+            
+            // Simulate writing processing
+            const response = `Writing Mode: ${mode}\nTarget Audience: ${audience}\n\nProcessed Content:\n"${input}"\n\nThis would normally call the writing API to enhance your content for the ${audience} audience using ${mode} techniques.`;
+            
+            document.getElementById('response-area').textContent = response;
         }
 
         // Load saved API keys
