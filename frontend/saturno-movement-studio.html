@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saturno Movement Studio</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-med: #1a1a1a;
+            --bg-light: #2a2a2a;
+            --text-light: #ffffff;
+            --text-med: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-blue: #4A90E2;
+            --accent-green: #50E3C2;
+            --accent-purple: #9013FE;
+            --glass-bg: rgba(26, 26, 26, 0.7);
+            --glass-blur: blur(15px);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            grid-template-areas:
+                "header header header"
+                "library main inspector";
+        }
+
+        .main-header {
+            grid-area: header;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .library-panel, .inspector-panel {
+            background: var(--bg-med);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .library-panel {
+            grid-area: library;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .main-panel {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .inspector-panel {
+            grid-area: inspector;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-content {
+            padding: 16px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .panel-tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-med);
+        }
+
+        .panel-tab.active {
+            color: var(--text-light);
+            font-weight: 600;
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Library Items */
+        .library-item {
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        .library-item.movement { cursor: grab; }
+
+        .library-item:hover, .library-item.selected {
+            background: var(--accent-blue);
+        }
+
+        .library-item h4 { margin: 0 0 4px 0; font-size: 14px; }
+        .library-item p { margin: 0; font-size: 12px; color: var(--text-med); }
+
+        /* Main Panel - Workout Creator */
+        .workout-creator { padding: 24px; }
+
+        .ai-generator {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        #ai-prompt-input, .modal-content input {
+            flex-grow: 1;
+            padding: 12px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        #ai-generate-btn, .btn-primary {
+            padding: 12px 20px;
+            background: var(--accent-purple);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #ai-generate-btn:disabled { background: var(--bg-light); cursor: not-allowed; }
+
+        .week-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 16px;
+        }
+
+        .day-column {
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            min-height: 400px;
+        }
+
+        .day-header {
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .adapt-btn {
+            background: none; 
+            border: none; 
+            color: var(--text-med); 
+            cursor: pointer; 
+            font-size: 18px;
+        }
+
+        .day-body { padding: 12px; min-height: 350px; }
+
+        .workout-item {
+            background: var(--bg-med);
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .workout-item.dragging { opacity: 0.5; }
+
+        /* Inspector Panel */
+        #inspector-content h3 { font-size: 18px; margin-bottom: 16px; color: var(--accent-green); }
+        #inspector-content p { color: var(--text-med); margin-bottom: 12px; line-height: 1.6; }
+        #inspector-content ul { padding-left: 20px; margin-bottom: 12px; }
+
+        .btn-ai {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 16px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 40px; }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent-blue);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modal */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%;
+            background-color: rgba(0,0,0,0.7); 
+            backdrop-filter: blur(5px);
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-med); 
+            padding: 25px; 
+            border: 1px solid var(--border-color);
+            width: 90%; 
+            max-width: 500px; 
+            border-radius: 16px;
+        }
+
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+
+        .modal-close-btn { 
+            background: none; 
+            border: none; 
+            color: var(--text-med); 
+            font-size: 24px; 
+            cursor: pointer; 
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main";
+            }
+            .library-panel, .inspector-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="logo"><strong>Saturno Movement Studio</strong></div>
+            <div>
+                <select id="kortex-mode-select" style="background: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-light); padding: 8px; border-radius: 8px;">
+                    <option value="Coach">Kortex Mode: Coach</option>
+                    <option value="Philosopher">Kortex Mode: Philosopher</option>
+                    <option value="Technical Analyst">Kortex Mode: Technical Analyst</option>
+                </select>
+            </div>
+        </header>
+
+        <aside class="library-panel">
+            <div class="panel-tabs">
+                <div class="panel-tab active" data-tab="movements">Movements</div>
+                <div class="panel-tab" data-tab="writing">Writing</div>
+                <div class="panel-tab" data-tab="projects">Projects</div>
+            </div>
+            <div class="panel-content">
+                <div id="library-content-movements" class="library-content active"></div>
+                <div id="library-content-writing" class="library-content" style="display: none;"></div>
+                <div id="library-content-projects" class="library-content" style="display: none;"></div>
+            </div>
+        </aside>
+
+        <main class="main-panel">
+            <div class="workout-creator">
+                <div class="ai-generator">
+                    <input type="text" id="ai-prompt-input" placeholder="e.g., Create a 4-day upper/lower split for hypertrophy...">
+                    <button id="ai-generate-btn">✨ Generate with AI</button>
+                </div>
+                <div class="week-calendar"></div>
+            </div>
+        </main>
+
+        <aside class="inspector-panel">
+            <div class="panel-header">🔍 Inspector</div>
+            <div class="panel-content" id="inspector-content">
+                <p>Select an item from the library or a workout to see details.</p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modals -->
+    <div id="adapt-workout-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✨ Adapt Workout</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <input type="text" id="adapt-prompt-input" placeholder="e.g., Make this harder, add more volume...">
+            <button id="adapt-confirm-btn" class="btn-primary" style="width:100%; margin-top: 15px;">Adapt</button>
+        </div>
+    </div>
+
+    <script>
+        // --- STATE ---
+        const state = {
+            movements: [
+                { id: 'ex1', name: 'Push Up', category: 'Upper Body' },
+                { id: 'ex2', name: 'Pull Up', category: 'Upper Body' },
+                { id: 'ex3', name: 'Squat', category: 'Lower Body' },
+                { id: 'ex4', name: 'Deadlift', category: 'Full Body' },
+                { id: 'ex5', name: 'Overhead Press', category: 'Upper Body' },
+                { id: 'ex6', name: 'Lunge', category: 'Lower Body' },
+                { id: 'ex7', name: 'Plank', category: 'Core' },
+                { id: 'ex8', name: 'Handstand', category: 'Advanced' },
+                { id: 'ex9', name: 'Muscle Up', category: 'Advanced' },
+                { id: 'ex10', name: 'Planche', category: 'Advanced' }
+            ],
+            writing: [
+                { id: 'w1', name: 'Chapter 1: The Philosophy', type: 'Book Chapter' },
+                { id: 'w2', name: 'Blog Post: Top 5 Myths', type: 'Article' },
+                { id: 'w3', name: 'Movement DNA System', type: 'Framework' }
+            ],
+            projects: [
+                { id: 'p1', name: 'Launch New Book', type: 'Publishing', tasks: [] },
+                { id: 'p2', name: 'YouTube Channel Relaunch', type: 'Content', tasks: [] },
+                { id: 'p3', name: 'Movement Studio App', type: 'Development', tasks: [] }
+            ],
+            daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            selectedItem: null,
+            currentAdaptDay: null
+        };
+
+        // --- DOM ELEMENTS ---
+        const libraryTabs = document.querySelectorAll('.panel-tab');
+        const libraryContents = document.querySelectorAll('.library-content');
+        const calendarPanel = document.querySelector('.week-calendar');
+        const inspectorContent = document.getElementById('inspector-content');
+        const aiGenerateBtn = document.getElementById('ai-generate-btn');
+        const aiPromptInput = document.getElementById('ai-prompt-input');
+        const adaptModal = document.getElementById('adapt-workout-modal');
+        const adaptConfirmBtn = document.getElementById('adapt-confirm-btn');
+        const adaptPromptInput = document.getElementById('adapt-prompt-input');
+
+        // --- RENDER FUNCTIONS ---
+        function renderLibrary() {
+            const activeTab = document.querySelector('.panel-tab.active').dataset.tab;
+            
+            libraryContents.forEach(content => content.style.display = 'none');
+            const activeContent = document.getElementById(`library-content-${activeTab}`);
+            activeContent.style.display = 'block';
+            activeContent.innerHTML = '';
+
+            state[activeTab].forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = `library-item ${activeTab === 'movements' ? 'movement' : ''}`;
+                itemEl.dataset.itemId = item.id;
+                itemEl.dataset.itemType = activeTab;
+                itemEl.innerHTML = `<h4>${item.name}</h4><p>${item.category || item.type}</p>`;
+                
+                if (activeTab === 'movements') {
+                    itemEl.draggable = true;
+                    itemEl.addEventListener('dragstart', handleDragStart);
+                }
+                itemEl.addEventListener('click', () => handleItemSelect(item, activeTab));
+                activeContent.appendChild(itemEl);
+            });
+        }
+
+        function renderCalendar() {
+            calendarPanel.innerHTML = '';
+            state.daysOfWeek.forEach(day => {
+                const column = document.createElement('div');
+                column.className = 'day-column';
+                column.dataset.day = day;
+                column.innerHTML = `<div class="day-header"><span>${day}</span><button class="adapt-btn" data-day="${day}">✨</button></div><div class="day-body"></div>`;
+                
+                const body = column.querySelector('.day-body');
+                body.addEventListener('dragover', handleDragOver);
+                body.addEventListener('drop', handleDrop);
+                
+                column.querySelector('.adapt-btn').addEventListener('click', (e) => openAdaptModal(e.currentTarget.dataset.day));
+                calendarPanel.appendChild(column);
+            });
+        }
+        
+        function renderInspector() {
+            if (!state.selectedItem) {
+                inspectorContent.innerHTML = '<p>Select an item from the library or a workout to see details.</p>';
+                return;
+            }
+            const { item, type } = state.selectedItem;
+            
+            let html = `<h3>${item.name}</h3><p><strong>Type:</strong> ${item.category || item.type}</p>`;
+            
+            if (type === 'movements') {
+                html += `<button class="btn-ai" data-type="explain" data-name="${item.name}">✨ Explain with Kortex</button>`;
+            }
+            if (type === 'projects') {
+                html += `<h4>Tasks:</h4><ul>${item.tasks.map(t => `<li>${t}</li>`).join('') || '<li>No tasks yet.</li>'}</ul>`;
+                html += `<button class="btn-ai" data-type="breakdown" data-name="${item.name}">✨ Break Down into Tasks</button>`;
+            }
+            
+            html += '<div id="ai-response-area"></div>';
+            inspectorContent.innerHTML = html;
+        }
+
+        // --- EVENT HANDLERS ---
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.itemId);
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragOver(e) { e.preventDefault(); }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const exerciseId = e.dataTransfer.getData('text/plain');
+            const exercise = state.movements.find(ex => ex.id === exerciseId);
+            const dropzone = e.target.closest('.day-body');
+
+            if (exercise && dropzone) {
+                const workoutItem = document.createElement('div');
+                workoutItem.className = 'workout-item';
+                workoutItem.textContent = `${exercise.name} (3x10)`;
+                dropzone.appendChild(workoutItem);
+            }
+            document.querySelector('.dragging')?.classList.remove('dragging');
+        }
+
+        function handleItemSelect(item, type) {
+            state.selectedItem = { item, type };
+            renderInspector();
+            document.querySelectorAll('.library-item.selected').forEach(el => el.classList.remove('selected'));
+            document.querySelector(`.library-item[data-item-id="${item.id}"]`).classList.add('selected');
+        }
+
+        function openAdaptModal(day) {
+            state.currentAdaptDay = day;
+            adaptModal.style.display = 'flex';
+            adaptPromptInput.focus();
+        }
+
+        async function handleAdaptWorkout() {
+            const day = state.currentAdaptDay;
+            const prompt = adaptPromptInput.value;
+            if (!day || !prompt) return;
+
+            const dayElement = document.querySelector(`.day-column[data-day="${day}"] .day-body`);
+            const existingExercises = Array.from(dayElement.querySelectorAll('.workout-item')).map(el => el.textContent).join(', ');
+            
+            dayElement.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+            
+            // Simulate AI response for now (replace with actual API call)
+            setTimeout(() => {
+                dayElement.innerHTML = '';
+                const newExercises = [
+                    `${prompt.includes('harder') ? 'Advanced ' : ''}Push Up (4x12)`,
+                    `${prompt.includes('volume') ? 'High Volume ' : ''}Pull Up (3x8)`,
+                    'Core Circuit (2x15)'
+                ];
+                
+                newExercises.forEach(exText => {
+                    const workoutItem = document.createElement('div');
+                    workoutItem.className = 'workout-item';
+                    workoutItem.textContent = exText;
+                    dayElement.appendChild(workoutItem);
+                });
+            }, 1500);
+            
+            adaptModal.style.display = 'none';
+            adaptPromptInput.value = '';
+        }
+
+        // --- AI INTEGRATION (Placeholder) ---
+        async function handleInspectorAI(e) {
+            const button = e.target.closest('.btn-ai');
+            if (!button) return;
+
+            const actionType = button.dataset.type;
+            const itemName = button.dataset.name;
+            const responseArea = document.getElementById('ai-response-area');
+            responseArea.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+
+            const aiMode = document.getElementById('kortex-mode-select').value;
+            
+            // Simulate AI response
+            setTimeout(() => {
+                if (actionType === 'explain') {
+                    let response = '';
+                    if (aiMode === 'Coach') {
+                        response = `<p><strong>Coach Mode:</strong> ${itemName} is your foundation! Start with perfect form, build strength gradually. Remember: consistency beats intensity every time.</p>`;
+                    } else if (aiMode === 'Philosopher') {
+                        response = `<p><strong>Philosopher Mode:</strong> ${itemName} is not just movement—it's a conversation between your body and gravity. Each rep is a meditation on strength.</p>`;
+                    } else {
+                        response = `<p><strong>Technical Mode:</strong> ${itemName} engages multiple muscle groups. Focus on scapular stability and core engagement for optimal biomechanics.</p>`;
+                    }
+                    responseArea.innerHTML = response;
+                } else if (actionType === 'breakdown') {
+                    const project = state.projects.find(p => p.name === itemName);
+                    project.tasks = ['Research phase', 'Content creation', 'Review and edit', 'Launch preparation'];
+                    renderInspector();
+                }
+            }, 1000);
+        }
+        
+        async function handleGenerateWorkout() {
+            const prompt = aiPromptInput.value;
+            if (!prompt) { 
+                alert("Please enter a description of the workout you want."); 
+                return; 
+            }
+
+            aiGenerateBtn.disabled = true;
+            aiGenerateBtn.textContent = 'Generating...';
+            
+            // Simulate AI workout generation
+            setTimeout(() => {
+                const sampleWorkouts = {
+                    'upper': [
+                        { day: 'Monday', exercises: [
+                            { name: 'Push Up', sets: 3, reps: '10-15' },
+                            { name: 'Pull Up', sets: 3, reps: '5-8' },
+                            { name: 'Dips', sets: 3, reps: '8-12' }
+                        ]},
+                        { day: 'Wednesday', exercises: [
+                            { name: 'Handstand Push Up', sets: 3, reps: '3-5' },
+                            { name: 'Muscle Up', sets: 3, reps: '2-4' },
+                            { name: 'Planche Progressions', sets: 3, reps: '10-15s' }
+                        ]}
+                    ],
+                    'lower': [
+                        { day: 'Tuesday', exercises: [
+                            { name: 'Pistol Squat', sets: 3, reps: '5-8' },
+                            { name: 'Single Leg Deadlift', sets: 3, reps: '8-12' },
+                            { name: 'Jump Squats', sets: 3, reps: '10-15' }
+                        ]},
+                        { day: 'Thursday', exercises: [
+                            { name: 'Lunge Variations', sets: 3, reps: '10-15' },
+                            { name: 'Calf Raises', sets: 3, reps: '15-20' },
+                            { name: 'Wall Sit', sets: 3, reps: '30-60s' }
+                        ]}
+                    ]
+                };
+
+                let selectedWorkouts = sampleWorkouts.upper;
+                if (prompt.toLowerCase().includes('lower')) selectedWorkouts = sampleWorkouts.lower;
+                if (prompt.toLowerCase().includes('hypertrophy')) selectedWorkouts = sampleWorkouts.upper;
+
+                document.querySelectorAll('.day-body').forEach(el => el.innerHTML = '');
+                
+                selectedWorkouts.forEach(dayPlan => {
+                    const dayElement = document.querySelector(`.day-column[data-day="${dayPlan.day}"] .day-body`);
+                    if (dayElement) {
+                        dayPlan.exercises.forEach(exercise => {
+                            const workoutItem = document.createElement('div');
+                            workoutItem.className = 'workout-item';
+                            workoutItem.textContent = `${exercise.name} (${exercise.sets}x${exercise.reps})`;
+                            dayElement.appendChild(workoutItem);
+                        });
+                    }
+                });
+
+                aiGenerateBtn.disabled = false;
+                aiGenerateBtn.textContent = '✨ Generate with AI';
+            }, 2000);
+        }
+
+        // --- INITIALIZATION ---
+        function init() {
+            renderLibrary();
+            renderCalendar();
+
+            libraryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    libraryTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderLibrary();
+                });
+            });
+            
+            aiGenerateBtn.addEventListener('click', handleGenerateWorkout);
+            inspectorContent.addEventListener('click', handleInspectorAI);
+            
+            adaptConfirmBtn.addEventListener('click', handleAdaptWorkout);
+            adaptModal.querySelector('.modal-close-btn').addEventListener('click', () => adaptModal.style.display = 'none');
+        }
+
+        init();
+    </script>
+</body>
+</html>
