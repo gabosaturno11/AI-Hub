@@ -1,0 +1,106 @@
+{
+  "name": "ai-hub-sidebar",
+  "displayName": "AI-Hub Sidebar",
+  "description": "AI-Hub unified control center as VS Code sidebar",
+  "version": "1.0.0",
+  "publisher": "gabosaturno11",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:aiHubSidebar"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "aiHubSidebar",
+          "name": "🤖 AI-Hub",
+          "when": "true"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiHub.openFunctional",
+        "title": "⚡ Functional Interface",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "aiHub.openMovement",
+        "title": "🏋️ Movement Studio",
+        "icon": "$(dumbbell)"
+      },
+      {
+        "command": "aiHub.openCortex",
+        "title": "📖 Cortex Control",
+        "icon": "$(book)"
+      },
+      {
+        "command": "aiHub.openDashboard",
+        "title": "📊 Working Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "aiHub.sync",
+        "title": "🔄 Sync to GitHub",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "aiHub.status",
+        "title": "📊 Check Status",
+        "icon": "$(info)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "aiHub.openFunctional",
+          "when": "view == aiHubSidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "aiHub.openMovement",
+          "when": "view == aiHubSidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "aiHub.openCortex",
+          "when": "view == aiHubSidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "aiHub.openDashboard",
+          "when": "view == aiHubSidebar",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "aiHub.sync",
+          "when": "view == aiHubSidebar",
+          "group": "inline"
+        },
+        {
+          "command": "aiHub.status",
+          "when": "view == aiHubSidebar",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  }
+}

@@ -53,6 +53,76 @@
             background: #cbd5e0;
         }
 
+        .dark-mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background: #cbd5e0;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .sidebar {
+            background: rgba(45, 55, 72, 0.95);
+            border-right-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .content-panel {
+            background: rgba(45, 55, 72, 0.95);
+        }
+
+        body.dark-mode .panel-header h2 {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .panel-header p {
+            color: #a0aec0;
+        }
+
+        body.dark-mode .api-section {
+            background: #2d3748;
+        }
+
+        body.dark-mode .api-section h3 {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .form-control {
+            background: #4a5568;
+            border-color: #718096;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        body.dark-mode .response-area {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .status-bar {
+            background: rgba(45, 55, 72, 0.95);
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
         .sidebar-header {
             margin-bottom: 30px;
         }
@@ -416,6 +486,7 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <button class="back-button" onclick="goBack()">← Back</button>
+            <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark</button>
             <div class="sidebar-header">
                 <h1>🤖 AI-Hub</h1>
                 <p>Unified Control Center</p>
@@ -438,6 +509,10 @@
                 <button class="nav-item" data-panel="dashboard">
                     <span class="icon">📊</span>
                     Working Dashboard
+                </button>
+                <button class="nav-item" data-panel="toc-editor">
+                    <span class="icon">📝</span>
+                    TOC Editor
                 </button>
             </div>
 
@@ -559,14 +634,39 @@
                 <div class="workout-builder">
                     <div class="exercise-list">
                         <h3>Available Exercises</h3>
-                        <div class="exercise-item" draggable="true">Push-ups</div>
-                        <div class="exercise-item" draggable="true">Pull-ups</div>
-                        <div class="exercise-item" draggable="true">Squats</div>
-                        <div class="exercise-item" draggable="true">Planks</div>
-                        <div class="exercise-item" draggable="true">Burpees</div>
+                        <div class="exercise-categories">
+                            <button class="category-btn active" data-category="all">All</button>
+                            <button class="category-btn" data-category="upper">Upper Body</button>
+                            <button class="category-btn" data-category="lower">Lower Body</button>
+                            <button class="category-btn" data-category="core">Core</button>
+                            <button class="category-btn" data-category="cardio">Cardio</button>
+                        </div>
+                        <div class="exercise-items" id="exercise-items">
+                            <div class="exercise-item" draggable="true" data-category="upper">Push-ups</div>
+                            <div class="exercise-item" draggable="true" data-category="upper">Pull-ups</div>
+                            <div class="exercise-item" draggable="true" data-category="lower">Squats</div>
+                            <div class="exercise-item" draggable="true" data-category="core">Planks</div>
+                            <div class="exercise-item" draggable="true" data-category="cardio">Burpees</div>
+                            <div class="exercise-item" draggable="true" data-category="upper">Dips</div>
+                            <div class="exercise-item" draggable="true" data-category="lower">Lunges</div>
+                            <div class="exercise-item" draggable="true" data-category="core">Mountain Climbers</div>
+                            <div class="exercise-item" draggable="true" data-category="upper">Handstand Push-ups</div>
+                            <div class="exercise-item" draggable="true" data-category="lower">Pistol Squats</div>
+                        </div>
                     </div>
                     <div class="workout-area" id="workout-area">
-                        <p>Drag exercises here to build your workout</p>
+                        <div class="workout-header">
+                            <h3>Your Workout</h3>
+                            <button class="btn btn-secondary" onclick="clearWorkout()">Clear All</button>
+                        </div>
+                        <div class="workout-exercises" id="workout-exercises">
+                            <p class="placeholder">Drag exercises here to build your workout</p>
+                        </div>
+                        <div class="workout-summary" id="workout-summary" style="display: none;">
+                            <h4>Workout Summary</h4>
+                            <p>Total Exercises: <span id="total-exercises">0</span></p>
+                            <p>Estimated Duration: <span id="estimated-duration">0</span> minutes</p>
+                        </div>
                     </div>
                 </div>
 
@@ -579,13 +679,42 @@
                             <option value="cardio">Cardio</option>
                             <option value="flexibility">Flexibility</option>
                             <option value="mixed">Mixed Workout</option>
+                            <option value="calisthenics">Calisthenics</option>
+                            <option value="hiit">HIIT</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Duration (minutes)</label>
-                        <input type="number" class="form-control" id="workout-duration" value="30">
+                        <input type="number" class="form-control" id="workout-duration" value="30" min="10" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label>Difficulty Level</label>
+                        <select class="form-control" id="difficulty-level">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Focus Areas</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="upper" checked> Upper Body
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="lower" checked> Lower Body
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="core" checked> Core
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="cardio"> Cardio
+                            </label>
+                        </div>
                     </div>
                     <button class="btn btn-primary" onclick="generateWorkout()">Generate Workout</button>
+                    <button class="btn btn-secondary" onclick="saveWorkout()">Save Workout</button>
                 </div>
             </div>
 
@@ -824,6 +953,22 @@
             }
         }
 
+        // Dark mode toggle function
+        function toggleDarkMode() {
+            const body = document.body;
+            const button = document.querySelector('.dark-mode-toggle');
+            
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                button.textContent = '🌙 Dark';
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                body.classList.add('dark-mode');
+                button.textContent = '☀️ Light';
+                localStorage.setItem('darkMode', 'true');
+            }
+        }
+
         // Writing hub toggle function
         function toggleWritingHub() {
             const panel = document.getElementById('writing-hub-panel');
@@ -859,14 +1004,22 @@
             document.getElementById('response-area').textContent = response;
         }
 
-        // Load saved API keys
+        // Load saved settings
         window.addEventListener('load', () => {
+            // Load API keys
             const savedKeys = localStorage.getItem('api-keys');
             if (savedKeys) {
                 const keys = JSON.parse(savedKeys);
                 document.getElementById('openai-key').value = keys.openai || '';
                 document.getElementById('claude-key').value = keys.claude || '';
                 document.getElementById('gemini-key').value = keys.gemini || '';
+            }
+            
+            // Load dark mode preference
+            const darkMode = localStorage.getItem('darkMode');
+            if (darkMode === 'true') {
+                document.body.classList.add('dark-mode');
+                document.querySelector('.dark-mode-toggle').textContent = '☀️ Light';
             }
         });
     </script>
