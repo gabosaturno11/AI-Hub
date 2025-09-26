@@ -224,34 +224,58 @@
             text-transform: uppercase;
         }
 
-        /* Action Buttons */
+        /* Action Buttons - Minimalistic */
         .action-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
             margin-top: 20px;
         }
 
         .action-btn {
-            padding: 15px;
-            background: linear-gradient(135deg, #00ff88, #00cc70);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: 600;
+            padding: 16px 20px;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+            background: #2a2a2a;
+            border-color: #00ff88;
+            color: #fff;
+        }
+
+        .action-btn.primary {
+            background: #00ff88;
+            color: #000;
+            border-color: #00ff88;
+            font-weight: 600;
+        }
+
+        .action-btn.primary:hover {
+            background: #00cc70;
+            transform: translateY(-1px);
         }
 
         .action-btn.secondary {
-            background: linear-gradient(135deg, #333, #444);
-            color: #fff;
+            background: #1a1a1a;
+            border-color: #444;
+            color: #999;
+        }
+
+        .action-btn.secondary:hover {
+            background: #222;
+            border-color: #666;
+            color: #ccc;
         }
 
         /* Iframe Container */
@@ -438,26 +462,23 @@
                 </div>
 
                 <div class="action-grid">
-                    <button class="action-btn" onclick="openInNewWindow('frontend/single-unified-hub.html')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-size: 1.1rem; padding: 18px;">
-                        🚀 SINGLE UNIFIED FRONTEND - EVERYTHING OPENS
+                    <button class="action-btn primary" onclick="openInNewWindow('frontend/single-unified-hub.html')">
+                        <span>🚀</span>SINGLE UNIFIED FRONTEND
                     </button>
                     <button class="action-btn" onclick="switchTab('toc-editor')">
-                        📝 Open TOC Editor
+                        <span>📝</span>Open TOC Editor
                     </button>
                     <button class="action-btn" onclick="switchTab('cortex')">
-                        🧠 Cortex Control
+                        <span>🧠</span>Cortex Control
                     </button>
                     <button class="action-btn" onclick="openInNewWindow('https://gabosaturno11.github.io/interactive-toc-editor/')">
-                        🔗 TOC Editor (Live)
+                        <span>🔗</span>TOC Editor (Live)
                     </button>
                     <button class="action-btn secondary" onclick="openInNewWindow('https://github.com/gabosaturno11')">
-                        🔗 GitHub Profile
+                        <span>🔗</span>GitHub Profile
                     </button>
                     <button class="action-btn secondary" onclick="switchTab('ai-hub-repo')">
-                        💻 Repository
-                    </button>
-                    <button class="action-btn secondary" onclick="switchTab('tools')">
-                        🛠️ Dev Tools
+                        <span>💻</span>Repository
                     </button>
                 </div>
             </div>
@@ -486,11 +507,11 @@
                     <h2 class="section-title">📝 Interactive TOC Editor</h2>
                 </div>
                 <div class="action-grid">
-                    <button class="action-btn" onclick="openInNewWindow('https://gabosaturno11.github.io/interactive-toc-editor/')">
-                        🔗 Open Live Editor
+                    <button class="action-btn primary" onclick="openInNewWindow('https://gabosaturno11.github.io/interactive-toc-editor/')">
+                        <span>🔗</span>Open Live Editor
                     </button>
                     <button class="action-btn secondary" onclick="reloadIframe('toc-iframe')">
-                        🔄 Reload Embedded
+                        <span>🔄</span>Reload Embedded
                     </button>
                 </div>
                 <div class="iframe-container">
@@ -507,10 +528,10 @@
                 </div>
                 <div class="action-grid">
                     <button class="action-btn" onclick="loadCortexControl()">
-                        📂 Load Cortex Control
+                        <span>📂</span>Load Cortex Control
                     </button>
                     <button class="action-btn secondary" onclick="loadWorkingDashboard()">
-                        💼 Working Dashboard
+                        <span>💼</span>Working Dashboard
                     </button>
                 </div>
                 <div class="iframe-container">
@@ -563,10 +584,10 @@
                 </div>
                 <div class="action-grid">
                     <button class="action-btn" onclick="openInNewWindow('https://github.com/gabosaturno11/AI-Hub')">
-                        🔗 Open on GitHub
+                        <span>🔗</span>Open on GitHub
                     </button>
                     <button class="action-btn secondary" onclick="openInNewWindow('https://gabosaturno11.github.io/AI-Hub')">
-                        🌐 GitHub Pages
+                        <span>🌐</span>GitHub Pages
                     </button>
                 </div>
                 <div class="iframe-container">
@@ -600,11 +621,11 @@
                     </div>
                 </div>
                 <div class="action-grid">
-                    <button class="action-btn" onclick="openInNewWindow('https://gabosaturno11.github.io/interactive-toc-editor/')">
-                        🔗 TOC Editor
+                    <button class="action-btn primary" onclick="openInNewWindow('https://gabosaturno11.github.io/interactive-toc-editor/')">
+                        <span>🔗</span>TOC Editor
                     </button>
-                    <button class="action-btn" onclick="openInNewWindow('https://gabosaturno11.github.io/AI-Hub/')">
-                        🔗 AI Hub
+                    <button class="action-btn primary" onclick="openInNewWindow('https://gabosaturno11.github.io/AI-Hub/')">
+                        <span>🔗</span>AI Hub
                     </button>
                 </div>
             </div>
@@ -618,16 +639,16 @@
                 </div>
                 <div class="action-grid">
                     <button class="action-btn" onclick="copyToClipboard('cd /Users/Gabosaturno/Workspace')">
-                        📋 Copy Workspace Path
+                        <span>📋</span>Copy Workspace Path
                     </button>
                     <button class="action-btn" onclick="copyToClipboard('cd /Users/Gabosaturno/Workspace/AOC_MASTER')">
-                        📋 Copy AOC Path
+                        <span>📋</span>Copy AOC Path
                     </button>
                     <button class="action-btn" onclick="copyToClipboard('https://gabosaturno11.github.io/interactive-toc-editor/')">
-                        📋 TOC Editor URL
+                        <span>📋</span>TOC Editor URL
                     </button>
                     <button class="action-btn secondary" onclick="copyToClipboard('https://gabosaturno11.github.io/AI-Hub/')">
-                        📋 AI Hub URL
+                        <span>📋</span>AI Hub URL
                     </button>
                 </div>
                 <div class="terminal">
