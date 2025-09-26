@@ -1,0 +1,32 @@
+# Jekyll configuration for GitHub Pages
+# This prevents Jekyll from processing certain directories
+
+# Exclude directories from Jekyll processing
+exclude:
+  - AOC_MASTER
+  - node_modules
+  - "*.zip"
+  - scripts
+  - setup
+  - deployment
+  - "*.sh"
+  - Chrome extentions
+  - cortex-control-center.zip
+  - ultimate-book-backend.zip
+  - perplexity-migration
+  - The-Art-of-Calisthenics__MASTER-VAULT
+
+# Don't process symlinks
+symlinks: false
+
+# Basic settings
+theme: null
+plugins: []
+
+# GitHub Pages settings
+safe: true
+source: .
+destination: ./_site
+lsi: false
+markdown: kramdown
+highlighter: rouge

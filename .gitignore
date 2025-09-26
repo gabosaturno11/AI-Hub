@@ -7,3 +7,7 @@ Thumbs.db
 *.swp
 *.tmp
 config/.env.local
+# AOC_MASTER symlinks (local only)
+AOC_MASTER/AOC_MASTER*
+AOC_MASTER_STABLE
+*.symlink
