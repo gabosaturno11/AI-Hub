@@ -811,11 +811,18 @@
         document.getElementById('workout-area').addEventListener('drop', (e) => {
             e.preventDefault();
             const exercise = e.dataTransfer.getData('text/plain');
-            const workoutArea = e.target;
-            if (workoutArea.querySelector('.placeholder')) {
-                workoutArea.innerHTML = '';
+            const workoutArea = document.getElementById('workout-area');
+            // Remove placeholder text if present
+            const placeholder = Array.from(workoutArea.querySelectorAll('p'))
+              .find(p => p.textContent && p.textContent.toLowerCase().includes('drag exercises'));
+            if (placeholder) {
+                placeholder.remove();
             }
-            workoutArea.innerHTML += `<div class="exercise-item">${exercise}</div>`;
+            // Append safely using DOM APIs
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            item.textContent = exercise;
+            workoutArea.appendChild(item);
         });
 
         // Functions
