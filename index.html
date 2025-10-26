@@ -406,7 +406,10 @@
     <!-- Tab Navigation -->
     <nav class="tab-nav">
         <div class="tab-list">
-            <button class="tab-button active" data-tab="dashboard">
+            <button class="tab-button active" data-tab="apps">
+                <span class="tab-emoji">📦</span>Apps
+            </button>
+            <button class="tab-button" data-tab="dashboard">
                 <span class="tab-emoji">🎯</span>Dashboard
             </button>
             <button class="tab-button" data-tab="toc-editor">
@@ -435,8 +438,54 @@
 
     <!-- Tab Content -->
     <div class="tab-content">
+        <!-- Apps Tab -->
+        <div class="tab-panel active" id="apps">
+            <style>
+                .apps-layout { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+                .apps-sidebar { background: #111; border: 1px solid #333; border-radius: 12px; padding: 12px; height: calc(100vh - 220px); overflow-y: auto; }
+                .apps-content { min-height: 400px; }
+                .apps-sidebar-header { font-weight: 600; color: #00ff88; margin: 6px 0 10px; padding-left: 6px; }
+                .apps-divider { margin: 10px 0 6px; font-size: 0.85rem; color: #aaa; padding-left: 6px; }
+                .app-link { width: 100%; text-align: left; padding: 10px 12px; background: #1a1a1a; color: #ddd; border: 1px solid #2a2a2a; border-radius: 8px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s ease; }
+                .app-link:hover { background: #222; border-color: #00ff8855; color: #fff; }
+                .app-link.active { background: linear-gradient(135deg, #00ff88, #00cc70); color: #000; border-color: #00ff88; font-weight: 600; }
+            </style>
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">📦 Unified Apps Portal</h2>
+                </div>
+                <div class="apps-layout">
+                    <div class="apps-sidebar">
+                        <div class="apps-sidebar-header">Core Frontends</div>
+                        <button class="app-link active" data-app="frontend/single-unified-hub.html">Single Unified Hub</button>
+                        <button class="app-link" data-app="frontend/unified-hub.html">Unified Hub</button>
+                        <button class="app-link" data-app="frontend/working-dashboard.html">Working Dashboard</button>
+                        <button class="app-link" data-app="frontend/cortex-control-center.html">Cortex Control Center</button>
+                        <button class="app-link" data-app="frontend/ai-hub-functional.html">AI Hub Functional</button>
+
+                        <div class="apps-divider">AOC Frontend</div>
+                        <button class="app-link" data-app="AOC_FRONTEND/AI_HUB_FRONTEND_DASHBOARD.html">AI Hub Dashboard</button>
+                        <button class="app-link" data-app="AOC_FRONTEND/AI_HUB_MODE_SELECTOR.html">Mode Selector</button>
+                        <button class="app-link" data-app="AOC_FRONTEND/REAL_TIME_STATUS_TRACKER.html">Live Status Tracker</button>
+                        <button class="app-link" data-app="AOC_FRONTEND/AI_HUB_FILE_RECOGNITION_SYSTEM.html">File Recognition</button>
+
+                        <div class="apps-divider">Deployment Demos</div>
+                        <button class="app-link" data-app="deployment/frontend/INTERFACE_🌐_Voice_Program_Creator_Enhanced.html">Voice Creator (Enhanced)</button>
+                        <button class="app-link" data-app="deployment/frontend/INTERFACE_🌐_Voice_Program_Creator.html">Voice Creator</button>
+                        <button class="app-link" data-app="deployment/frontend/AI_HUB_FRONTEND_DASHBOARD.html">AI Hub Frontend Dashboard</button>
+                        <button class="app-link" data-app="deployment/frontend/AI_HUB_MODE_SELECTOR.html">Mode Selector (Deploy)</button>
+                        <button class="app-link" data-app="deployment/frontend/REAL_TIME_STATUS_TRACKER.html">Status Tracker (Deploy)</button>
+                    </div>
+                    <div class="apps-content">
+                        <div class="iframe-container" style="height: calc(100vh - 220px);">
+                            <iframe id="apps-iframe" src="frontend/single-unified-hub.html"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Dashboard Tab -->
-        <div class="tab-panel active" id="dashboard">
+        <div class="tab-panel" id="dashboard">
             <div class="dashboard-section">
                 <div class="section-header">
                     <h2 class="section-title">🎯 Main Dashboard</h2>
@@ -724,6 +773,21 @@
             });
         });
 
+        // Apps portal navigation
+        function initAppsPortal() {
+            const appButtons = document.querySelectorAll('.app-link');
+            const iframe = document.getElementById('apps-iframe');
+            if (!appButtons.length || !iframe) return;
+            appButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    appButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const url = btn.getAttribute('data-app');
+                    if (url) iframe.src = url;
+                });
+            });
+        }
+
         // Open in new window
         function openInNewWindow(url) {
             window.open(url, '_blank');
@@ -814,6 +878,7 @@
         // Show welcome notification
         window.addEventListener('load', () => {
             showNotification('🚀 AI Hub Unified - All Systems Ready!');
+            initAppsPortal();
         });
     </script>
 </body>
