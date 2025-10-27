@@ -847,8 +847,18 @@
         document.getElementById('workout-area').addEventListener('drop', (e) => {
             e.preventDefault();
             const exercise = e.dataTransfer.getData('text/plain');
-            const workoutArea = e.target;
-            workoutArea.innerHTML += `<div class="exercise-item">${exercise}</div>`;
+            const exercisesContainer = document.getElementById('workout-exercises');
+            if (!exercisesContainer) return;
+
+            const placeholder = exercisesContainer.querySelector('.placeholder');
+            if (placeholder) {
+                placeholder.remove();
+            }
+
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            item.textContent = exercise;
+            exercisesContainer.appendChild(item);
         });
 
         // API Functions
