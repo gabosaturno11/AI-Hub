@@ -751,27 +751,49 @@
     </div>
 
     <script>
-        // Tab Switching
-        function switchTab(tabName) {
-            // Remove active class from all tabs and panels
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-panel').forEach(panel => {
-                panel.classList.remove('active');
-            });
+        // Tab Switching + Hash Routing
+        const VALID_TABS = Array.from(document.querySelectorAll('.tab-button')).map(b => b.dataset.tab);
 
-            // Add active class to selected tab and panel
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById(tabName).classList.add('active');
+        function setActiveTab(tabName) {
+            const tab = VALID_TABS.includes(tabName) ? tabName : 'apps';
+
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+            const buttonEl = document.querySelector(`[data-tab="${tab}"]`);
+            const panelEl = document.getElementById(tab);
+            if (buttonEl) buttonEl.classList.add('active');
+            if (panelEl) panelEl.classList.add('active');
         }
 
-        // Add click listeners to all tab buttons
+        function switchTab(tabName) {
+            // Update hash; hashchange handler will render
+            const tab = VALID_TABS.includes(tabName) ? tabName : 'apps';
+            if (location.hash !== `#/${tab}`) {
+                location.hash = `#/${tab}`;
+            } else {
+                // If hash is the same (e.g., first load), still ensure UI state is correct
+                setActiveTab(tab);
+            }
+        }
+
+        function getTabFromHash() {
+            const match = location.hash.match(/^#\/(.+)$/);
+            const tab = match ? match[1] : '';
+            return VALID_TABS.includes(tab) ? tab : 'apps';
+        }
+
+        function onHashChange() {
+            const tab = getTabFromHash();
+            setActiveTab(tab);
+        }
+
+        // Add click listeners to all tab buttons (updates hash)
         document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                switchTab(button.dataset.tab);
-            });
+            button.addEventListener('click', () => switchTab(button.dataset.tab));
         });
+
+        window.addEventListener('hashchange', onHashChange);
 
         // Apps portal navigation
         function initAppsPortal() {
@@ -879,6 +901,11 @@
         window.addEventListener('load', () => {
             showNotification('🚀 AI Hub Unified - All Systems Ready!');
             initAppsPortal();
+            // Initialize route from hash (or default)
+            if (!location.hash) {
+                location.replace('#/apps');
+            }
+            onHashChange();
         });
     </script>
 </body>
