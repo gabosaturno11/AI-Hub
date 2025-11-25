@@ -563,7 +563,9 @@
     function logVoice(message) {
       const log = document.getElementById('voiceLog');
       const time = new Date().toLocaleTimeString();
-      log.innerHTML += `<div>[${time}] ${message}</div>`;
+      const entry = document.createElement('div');
+      entry.textContent = `[${time}] ${message}`;
+      log.appendChild(entry);
       log.scrollTop = log.scrollHeight;
     }
 
@@ -603,17 +605,21 @@
 
     function deleteWorkout(id, event) {
       event.stopPropagation();
-      const workout = workouts.find(w => w.id === id);
-      if (workout) {
-        calendar = calendar.map(w => w && w.id === id ? null : w);
-        workouts = workouts.filter(w => w.id !== id);
+      const workoutIndex = workouts.findIndex(w => w.id === id);
+      if (workoutIndex >= 0) {
+        const deletedWorkout = workouts[workoutIndex];
+        // Remove from calendar first using the preserved reference
+        calendar = calendar.map(w => (w && w.id === id) ? null : w);
+        // Remove from workouts list
+        workouts.splice(workoutIndex, 1);
+        // Clear selection if it was the deleted workout
         if (currentWorkout && currentWorkout.id === id) {
           currentWorkout = null;
         }
         saveState();
         renderWorkouts();
         renderCalendar();
-        logVoice(`✅ Deleted workout: ${workout.name}`);
+        logVoice(`✅ Deleted workout: ${deletedWorkout.name}`);
       }
     }
 
