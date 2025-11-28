@@ -1,12 +1,21 @@
 .DS_Store
 node_modules/
 *.log
-.env
 .vscode/
 Thumbs.db
 *.swp
 *.tmp
+
+# Environment files - NEVER commit these (contain API keys)
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+config/.env
 config/.env.local
+config/.env.*
+!.env.example
 # AOC_MASTER symlinks (local only)
 AOC_MASTER/AOC_MASTER*
 AOC_MASTER_STABLE
