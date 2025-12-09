@@ -66,6 +66,26 @@ const APIConfig = {
         }
     },
 
+    // Manus AI
+    manus: {
+        apiKey: null,
+        baseUrl: 'https://api.manus.im',
+
+        isConfigured() {
+            return !!this.apiKey && this.apiKey !== 'your_manus_api_key_here';
+        }
+    },
+
+    // Cursor
+    cursor: {
+        apiKey: null,
+        baseUrl: 'https://api.cursor.com',
+
+        isConfigured() {
+            return !!this.apiKey && this.apiKey !== 'your_cursor_api_key_here';
+        }
+    },
+
     /**
      * Initialize configuration from environment
      * Call this at app startup
@@ -85,6 +105,9 @@ const APIConfig = {
 
             this.notion.apiKey = process.env.NOTION_API_KEY || null;
             this.notion.databaseId = process.env.NOTION_DATABASE_ID || null;
+
+            this.manus.apiKey = process.env.MANUS_API_KEY || null;
+            this.cursor.apiKey = process.env.CURSOR_API_KEY || null;
         } else if (typeof window !== 'undefined' && window.ENV_CONFIG) {
             // Browser environment - load from window.ENV_CONFIG
             // This should be set by your server or build process
@@ -93,6 +116,8 @@ const APIConfig = {
             this.openai.apiKey = window.ENV_CONFIG.OPENAI_API_KEY || null;
             this.notion.apiKey = window.ENV_CONFIG.NOTION_API_KEY || null;
             this.notion.databaseId = window.ENV_CONFIG.NOTION_DATABASE_ID || null;
+            this.manus.apiKey = window.ENV_CONFIG.MANUS_API_KEY || null;
+            this.cursor.apiKey = window.ENV_CONFIG.CURSOR_API_KEY || null;
         }
 
         return this;
@@ -108,6 +133,8 @@ const APIConfig = {
         if (keys.openai) this.openai.apiKey = keys.openai;
         if (keys.notion) this.notion.apiKey = keys.notion;
         if (keys.notionDatabaseId) this.notion.databaseId = keys.notionDatabaseId;
+        if (keys.manus) this.manus.apiKey = keys.manus;
+        if (keys.cursor) this.cursor.apiKey = keys.cursor;
         return this;
     },
 
@@ -121,13 +148,15 @@ const APIConfig = {
             gemini: this.gemini.isConfigured(),
             openai: this.openai.isConfigured(),
             notion: this.notion.isConfigured(),
-            anyConfigured: this.claude.isConfigured() || this.gemini.isConfigured() || this.openai.isConfigured() || this.notion.isConfigured()
+            manus: this.manus.isConfigured(),
+            cursor: this.cursor.isConfigured(),
+            anyConfigured: this.claude.isConfigured() || this.gemini.isConfigured() || this.openai.isConfigured() || this.notion.isConfigured() || this.manus.isConfigured() || this.cursor.isConfigured()
         };
     },
 
     /**
      * Get headers for API requests
-     * @param {string} provider - 'claude', 'gemini', 'openai', or 'notion'
+     * @param {string} provider - 'claude', 'gemini', 'openai', 'notion', 'manus', or 'cursor'
      * @returns {Object} Headers object for fetch requests
      */
     getHeaders(provider) {
@@ -150,6 +179,12 @@ const APIConfig = {
                 headers['Authorization'] = `Bearer ${this.notion.apiKey}`;
                 headers['Notion-Version'] = this.notion.version;
                 break;
+            case 'manus':
+                headers['Authorization'] = `Bearer ${this.manus.apiKey}`;
+                break;
+            case 'cursor':
+                headers['Authorization'] = `Bearer ${this.cursor.apiKey}`;
+                break;
         }
 
         return headers;
@@ -157,7 +192,7 @@ const APIConfig = {
 
     /**
      * Validate that an API key looks valid (basic format check)
-     * @param {string} provider - 'claude', 'gemini', 'openai', or 'notion'
+     * @param {string} provider - 'claude', 'gemini', 'openai', 'notion', 'manus', or 'cursor'
      * @returns {boolean} Whether the key appears valid
      */
     validateKeyFormat(provider) {
@@ -176,6 +211,10 @@ const APIConfig = {
                 return key.startsWith('sk-');
             case 'notion':
                 return key.startsWith('secret_') || key.startsWith('ntn_');
+            case 'manus':
+                return key.length > 10; // Manus key format
+            case 'cursor':
+                return key.length > 10; // Cursor key format
             default:
                 return key.length > 10;
         }
